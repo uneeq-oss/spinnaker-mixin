@@ -1,0 +1,24 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: spinnaker
+  namespace: spinnaker
+  labels:
+    app.kubernetes.io/part-of: spinnaker
+    prometheus.io/scrape: "true"
+spec:
+  jobLabel: "app.kubernetes.io/name"
+  selector:
+    matchLabels:
+      app.kubernetes.io/part-of: spinnaker
+      prometheus.io/scrape: "true"
+  podTargetLabels:
+  - "app.kubernetes.io/name"
+  podMetricsEndpoints:
+  - targetPort: 8008
+    path: /aop-prometheus
+    metricRelabelings:
+    - regex: hostname
+      action: labeldrop
+  sampleLimit: 20000

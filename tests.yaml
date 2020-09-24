@@ -1,0 +1,32 @@
+---
+rule_files:
+- manifests/prometheus_alerts.yaml
+- manifests/prometheus_rules.yaml
+
+evaluation_interval: 1m
+
+# At some point it may make sense to split this file into tests per application
+
+tests:
+
+# Igor
+- interval: 1m
+  input_series:
+  - series: 'pollingMonitor_itemsOverThreshold{monitor="DockerMonitor", partition="succeedingaccount", instance="foo", pod="bar"}'
+    values: 'NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN'
+  - series: 'pollingMonitor_itemsOverThreshold{monitor="DockerMonitor", partition="failingaccount", instance="foo", pod="bar"}'
+    values: NaN NaN NaN NaN NaN 5+0x20 0+0x20
+  alert_rule_test:
+  - eval_time: 11m
+    alertname: PollingMonitorItemsOverThreshold
+    exp_alerts:
+    - exp_labels:
+        severity: critical
+        monitor: DockerMonitor
+        partition: failingaccount
+      exp_annotations:
+        summary: 'Polling monitor item threshold exceeded.'
+        description: 'DockerMonitor polling monitor for failingaccount threshold exceeded, preventing pipeline triggers.'
+        runbook_url: 'https://kb.armory.io/s/article/Hitting-Igor-s-caching-thresholds'
+  - eval_time: 35m
+    alertname: PollingMonitorItemsOverThreshold
