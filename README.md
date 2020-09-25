@@ -71,7 +71,7 @@ $ kubectl apply -f podmonitor.yaml
 ```
 
 The Prometheus Operator will trigger a reload of Prometheus configuration and
-you should see the Sealed Secrets Controller in your Prometheus UI under 
+you should see the Spinnaker services in your Prometheus UI under 
 `Service Discovery` and `Targets`.
 
 ## Grafana dashboard
