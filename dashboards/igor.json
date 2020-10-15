@@ -1210,22 +1210,55 @@
       {
         "allValue": null,
         "current": {
+          "isNone": true,
+          "selected": false,
+          "text": "None",
+          "value": ""
+        },
+        "datasource": "prometheus",
+        "definition": "label_values(up,job)",
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "job",
+        "options": [
+          {
+            "isNone": true,
+            "selected": true,
+            "text": "None",
+            "value": ""
+          }
+        ],
+        "query": "label_values(up,job)",
+        "refresh": 0,
+        "regex": ".*igor*.",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
           "selected": true,
-          "tags": [],
           "text": "All",
           "value": [
             "$__all"
           ]
         },
         "datasource": "prometheus",
-        "definition": "label_values(up{job=\"igor\"}, instance)",
+        "definition": "label_values(up{job=\"$job\"}, instance)",
         "hide": 0,
         "includeAll": true,
         "label": "Instance",
         "multi": true,
         "name": "instance",
         "options": [],
-        "query": "label_values(up{job=\"igor\"}, instance)",
+        "query": "label_values(up{job=\"$job\"}, instance)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -1269,5 +1302,5 @@
   "timezone": "browser",
   "title": "Igor Microservice",
   "uid": "8wjwfc4Mk",
-  "version": 7
+  "version": 2
 }

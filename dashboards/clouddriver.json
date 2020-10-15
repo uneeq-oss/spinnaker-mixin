@@ -4619,55 +4619,56 @@
   "templating": {
     "list": [
       {
-        "allValue": "clouddriver.*",
         "current": {
           "selected": true,
-          "text": "All",
-          "value": [
-            "$__all"
-          ]
+          "text": "clouddriver",
+          "value": "clouddriver"
         },
-        "hide": 0,
-        "includeAll": true,
+        "hide": 2,
         "label": null,
-        "multi": true,
+        "name": "spinSvc",
+        "options": [
+          {
+            "selected": true,
+            "text": "clouddriver",
+            "value": "clouddriver"
+          }
+        ],
+        "query": "clouddriver",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "spin-clouddriver",
+          "value": "spin-clouddriver"
+        },
+        "datasource": "prometheus",
+        "definition": "label_values(up, job)",
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
         "name": "job",
         "options": [
           {
             "selected": true,
-            "text": "All",
-            "value": "$__all"
-          },
-          {
-            "selected": false,
-            "text": "clouddriver",
-            "value": "clouddriver"
-          },
-          {
-            "selected": false,
-            "text": "clouddriver-caching",
-            "value": "clouddriver-caching"
-          },
-          {
-            "selected": false,
-            "text": "clouddriver-ro",
-            "value": "clouddriver-ro"
-          },
-          {
-            "selected": false,
-            "text": "clouddriver-ro-deck",
-            "value": "clouddriver-ro-deck"
-          },
-          {
-            "selected": false,
-            "text": "clouddriver-rw",
-            "value": "clouddriver-rw"
+            "text": "spin-clouddriver",
+            "value": "spin-clouddriver"
           }
         ],
-        "query": "clouddriver, clouddriver-caching, clouddriver-ro, clouddriver-ro-deck, clouddriver-rw",
-        "queryValue": "",
+        "query": "label_values(up, job)",
+        "refresh": 0,
+        "regex": ".*$spinSvc.*",
         "skipUrlSync": false,
-        "type": "custom"
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
       },
       {
         "allValue": ".*",
@@ -4810,5 +4811,5 @@
   "timezone": "browser",
   "title": "Clouddriver Microservice",
   "uid": "000000003",
-  "version": 1
+  "version": 2
 }

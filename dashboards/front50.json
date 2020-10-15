@@ -1476,24 +1476,27 @@
         "allValue": null,
         "current": {
           "selected": false,
-          "text": "front50",
-          "value": "front50"
+          "text": "spin-front50",
+          "value": "spin-front50"
         },
-        "hide": 2,
+        "datasource": "prometheus",
+        "definition": "label_values(up, job)",
+        "hide": 0,
         "includeAll": false,
         "label": null,
         "multi": false,
         "name": "job",
-        "options": [
-          {
-            "selected": true,
-            "text": "front50",
-            "value": "front50"
-          }
-        ],
-        "query": "front50",
+        "options": [],
+        "query": "label_values(up, job)",
+        "refresh": 1,
+        "regex": ".*front50*.",
         "skipUrlSync": false,
-        "type": "custom"
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
       },
       {
         "allValue": ".*",
@@ -1554,5 +1557,5 @@
   "timezone": "browser",
   "title": "Front50 Microservice",
   "uid": "ieqwB54Mz",
-  "version": 1
+  "version": 2
 }

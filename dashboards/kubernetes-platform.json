@@ -1336,14 +1336,14 @@
           "value": "$__all"
         },
         "datasource": "prometheus",
-        "definition": "label_values(up{job=~\"clouddriver.*\"}, instance)",
+        "definition": "label_values(up{job=~\".*clouddriver*.\"}, instance)",
         "hide": 0,
         "includeAll": true,
         "label": "",
         "multi": false,
         "name": "Instance",
         "options": [],
-        "query": "label_values(up{job=~\"clouddriver.*\"}, instance)",
+        "query": "label_values(up{job=~\".*clouddriver*.\"}, instance)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -1439,5 +1439,5 @@
   "timezone": "browser",
   "title": "Spinnaker Kubernetes Details",
   "uid": "BrCQBcVMk",
-  "version": 1
+  "version": 2
 }

@@ -437,25 +437,36 @@
       {
         "allValue": null,
         "current": {
+          "isNone": true,
           "selected": false,
-          "text": "fiat",
-          "value": "fiat"
+          "text": "None",
+          "value": ""
         },
-        "hide": 2,
+        "datasource": "prometheus",
+        "definition": "label_values(up,job)",
+        "hide": 0,
         "includeAll": false,
         "label": null,
         "multi": false,
         "name": "job",
         "options": [
           {
+            "isNone": true,
             "selected": true,
-            "text": "fiat",
-            "value": "fiat"
+            "text": "None",
+            "value": ""
           }
         ],
-        "query": "fiat",
+        "query": "label_values(up,job)",
+        "refresh": 0,
+        "regex": ".*fiat*.",
         "skipUrlSync": false,
-        "type": "custom"
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
       },
       {
         "allValue": ".*",
@@ -516,5 +527,5 @@
   "timezone": "browser",
   "title": "Fiat Microservice",
   "uid": "bjrQf5VGk",
-  "version": 1
+  "version": 2
 }

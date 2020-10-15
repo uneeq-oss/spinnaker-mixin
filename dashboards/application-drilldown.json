@@ -66,7 +66,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(stage_invocations_total{job=\"orca\", application=~\"$Application\"}[$__interval])) by (application, type)",
+          "expr": "sum(rate(stage_invocations_total{spinSvc=\"$spinSvc\", application=~\"$Application\"}[$__interval])) by (application, type)",
           "hide": false,
           "interval": "30s",
           "intervalFactor": 2,
@@ -165,7 +165,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(queue_pushed_messages_total{job=\"orca\", application=~\"$Application\"}[$__interval])) by (application)",
+          "expr": "sum(rate(queue_pushed_messages_total{spinSvc=\"$spinSvc\", application=~\"$Application\"}[$__interval])) by (application)",
           "format": "time_series",
           "interval": "30s",
           "intervalFactor": 2,
@@ -266,7 +266,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(pipelines_triggered_total{job=~\"echo.*\", application=~\"$Application\"}[$__interval])) by (name, application)",
+          "expr": "sum(rate(pipelines_triggered_total{spinSvc=~\"echo\", application=~\"$Application\"}[$__interval])) by (name, application)",
           "hide": false,
           "interval": "30s",
           "intervalFactor": 2,
@@ -540,6 +540,190 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 15
+      },
+      "hiddenSeries": false,
+      "id": 67,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "percentage": false,
+      "pluginVersion": "7.1.0",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum(resilience4j_circuitbreaker_state{state=\"open\"}) by (metricGroup, metricType, spinSvc)",
+          "interval": "",
+          "legendFormat": "{{spinSvc}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Hystrix Short Circuited (global)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 15
+      },
+      "hiddenSeries": false,
+      "id": 68,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "percentage": false,
+      "pluginVersion": "7.1.0",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum(rate(resilience4j_circuitbreaker_failure_rate[$__interval])) by (name, spinSvc)",
+          "interval": "",
+          "legendFormat": "{{spinSvc}}-{{name}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Hystrix Failure Rate",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     }
   ],
   "refresh": "30s",
@@ -551,6 +735,26 @@
   "templating": {
     "list": [
       {
+        "current": {
+          "selected": false,
+          "text": "orca",
+          "value": "orca"
+        },
+        "hide": 2,
+        "label": "",
+        "name": "spinSvc",
+        "options": [
+          {
+            "selected": true,
+            "text": "orca",
+            "value": "orca"
+          }
+        ],
+        "query": "orca",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
         "allValue": ".*",
         "current": {
           "selected": false,
@@ -558,14 +762,14 @@
           "value": "$__all"
         },
         "datasource": "prometheus",
-        "definition": "label_values(stage_invocations_total{job=\"orca\"}, application)",
+        "definition": "label_values(stage_invocations_total{spinSvc=\"$spinSvc\"}, application)",
         "hide": 0,
         "includeAll": true,
         "label": null,
         "multi": false,
         "name": "Application",
         "options": [],
-        "query": "label_values(stage_invocations_total{job=\"orca\"}, application)",
+        "query": "label_values(stage_invocations_total{spinSvc=\"$spinSvc\"}, application)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
@@ -609,5 +813,5 @@
   "timezone": "browser",
   "title": "Specific Spinnaker Application Details",
   "uid": "q9Cwf54Mz",
-  "version": 1
+  "version": 2
 }
