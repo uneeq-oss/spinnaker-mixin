@@ -512,7 +512,6 @@
           "show": true
         },
         {
-          "$$hashKey": "object:3552",
           "format": "decbytes",
           "label": null,
           "logBase": 1,
@@ -536,50 +535,59 @@
   "templating": {
     "list": [
       {
-        "allValue": "echo.*",
+        "current": {
+          "selected": true,
+          "text": "echo",
+          "value": "echo"
+        },
+        "hide": 2,
+        "label": null,
+        "name": "spinSvc",
+        "options": [
+          {
+            "selected": true,
+            "text": "echo",
+            "value": "echo"
+          }
+        ],
+        "query": "echo",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
+        "allValue": "",
         "current": {
           "selected": true,
           "text": "All",
           "value": "$__all"
         },
+        "datasource": "prometheus",
+        "definition": "label_values(up{job=~\".*$spinSvc.*\"}, job)",
         "hide": 0,
         "includeAll": true,
         "label": null,
         "multi": false,
         "name": "job",
-        "options": [
-          {
-            "selected": true,
-            "text": "All",
-            "value": "$__all"
-          },
-          {
-            "selected": false,
-            "text": "echo",
-            "value": "echo"
-          },
-          {
-            "selected": false,
-            "text": "echo-scheduler",
-            "value": "echo-scheduler"
-          },
-          {
-            "selected": false,
-            "text": "echo-worker",
-            "value": "echo-worker"
-          }
-        ],
-        "query": "echo, echo-scheduler, echo-worker",
-        "queryValue": "",
+        "options": [],
+        "query": "label_values(up{job=~\".*$spinSvc.*\"}, job)",
+        "refresh": 1,
+        "regex": "",
         "skipUrlSync": false,
-        "type": "custom"
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
       },
       {
         "allValue": ".*",
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "All",
-          "value": "$__all"
+          "value": [
+            "$__all"
+          ]
         },
         "datasource": "prometheus",
         "definition": "label_values(up{job=~\"$job\"}, instance)",
@@ -633,5 +641,5 @@
   "timezone": "browser",
   "title": "Echo Microservice",
   "uid": "e4CQBc4Mk",
-  "version": 1
+  "version": 3
 }

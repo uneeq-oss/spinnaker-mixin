@@ -4619,55 +4619,50 @@
   "templating": {
     "list": [
       {
-        "allValue": "clouddriver.*",
         "current": {
           "selected": true,
-          "text": "All",
-          "value": [
-            "$__all"
-          ]
+          "text": "clouddriver",
+          "value": "clouddriver"
         },
-        "hide": 0,
-        "includeAll": true,
+        "hide": 2,
         "label": null,
-        "multi": true,
-        "name": "job",
+        "name": "spinSvc",
         "options": [
           {
             "selected": true,
-            "text": "All",
-            "value": "$__all"
-          },
-          {
-            "selected": false,
             "text": "clouddriver",
             "value": "clouddriver"
-          },
-          {
-            "selected": false,
-            "text": "clouddriver-caching",
-            "value": "clouddriver-caching"
-          },
-          {
-            "selected": false,
-            "text": "clouddriver-ro",
-            "value": "clouddriver-ro"
-          },
-          {
-            "selected": false,
-            "text": "clouddriver-ro-deck",
-            "value": "clouddriver-ro-deck"
-          },
-          {
-            "selected": false,
-            "text": "clouddriver-rw",
-            "value": "clouddriver-rw"
           }
         ],
-        "query": "clouddriver, clouddriver-caching, clouddriver-ro, clouddriver-ro-deck, clouddriver-rw",
-        "queryValue": "",
+        "query": "clouddriver",
         "skipUrlSync": false,
-        "type": "custom"
+        "type": "constant"
+      },
+      {
+        "allValue": "",
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": "prometheus",
+        "definition": "label_values(up{job=~\".*$spinSvc.*\"}, job)",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": false,
+        "name": "job",
+        "options": [],
+        "query": "label_values(up{job=~\".*$spinSvc.*\"}, job)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
       },
       {
         "allValue": ".*",
@@ -4810,5 +4805,5 @@
   "timezone": "browser",
   "title": "Clouddriver Microservice",
   "uid": "000000003",
-  "version": 1
+  "version": 2
 }

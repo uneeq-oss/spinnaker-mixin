@@ -435,17 +435,14 @@
   "templating": {
     "list": [
       {
-        "allValue": null,
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "fiat",
           "value": "fiat"
         },
         "hide": 2,
-        "includeAll": false,
         "label": null,
-        "multi": false,
-        "name": "job",
+        "name": "spinSvc",
         "options": [
           {
             "selected": true,
@@ -455,14 +452,42 @@
         ],
         "query": "fiat",
         "skipUrlSync": false,
-        "type": "custom"
+        "type": "constant"
+      },
+      {
+        "allValue": "",
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": "prometheus",
+        "definition": "label_values(up{job=~\".*$spinSvc.*\"}, job)",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": false,
+        "name": "job",
+        "options": [],
+        "query": "label_values(up{job=~\".*$spinSvc.*\"}, job)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
       },
       {
         "allValue": ".*",
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "All",
-          "value": "$__all"
+          "value": [
+            "$__all"
+          ]
         },
         "datasource": "prometheus",
         "definition": "label_values(up{job=~\"$job\"}, instance)",
@@ -473,7 +498,7 @@
         "name": "Instance",
         "options": [],
         "query": "label_values(up{job=~\"$job\"}, instance)",
-        "refresh": 2,
+        "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
         "sort": 1,
@@ -516,5 +541,5 @@
   "timezone": "browser",
   "title": "Fiat Microservice",
   "uid": "bjrQf5VGk",
-  "version": 1
+  "version": 2
 }
