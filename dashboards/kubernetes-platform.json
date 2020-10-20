@@ -1329,21 +1329,41 @@
   "templating": {
     "list": [
       {
-        "allValue": ".*",
         "current": {
-          "selected": false,
+          "selected": true,
+          "text": "clouddriver",
+          "value": "clouddriver"
+        },
+        "hide": 2,
+        "label": null,
+        "name": "spinSvc",
+        "options": [
+          {
+            "selected": true,
+            "text": "clouddriver",
+            "value": "clouddriver"
+          }
+        ],
+        "query": "clouddriver",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
+        "allValue": "",
+        "current": {
+          "selected": true,
           "text": "All",
           "value": "$__all"
         },
         "datasource": "prometheus",
-        "definition": "label_values(up{job=~\".*clouddriver*.\"}, instance)",
+        "definition": "label_values(up{job=~\".*$spinSvc*.\"}, instance)",
         "hide": 0,
         "includeAll": true,
         "label": "",
         "multi": false,
         "name": "Instance",
         "options": [],
-        "query": "label_values(up{job=~\".*clouddriver*.\"}, instance)",
+        "query": "label_values(up{job=~\".*$spinSvc*.\"}, instance)",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,

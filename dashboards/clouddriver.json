@@ -4639,29 +4639,23 @@
         "type": "constant"
       },
       {
-        "allValue": null,
+        "allValue": "",
         "current": {
           "selected": false,
-          "text": "spin-clouddriver",
-          "value": "spin-clouddriver"
+          "text": "All",
+          "value": "$__all"
         },
         "datasource": "prometheus",
-        "definition": "label_values(up, job)",
+        "definition": "label_values(up{job=~\".*$spinSvc.*\"}, job)",
         "hide": 0,
-        "includeAll": false,
+        "includeAll": true,
         "label": null,
         "multi": false,
         "name": "job",
-        "options": [
-          {
-            "selected": true,
-            "text": "spin-clouddriver",
-            "value": "spin-clouddriver"
-          }
-        ],
-        "query": "label_values(up, job)",
-        "refresh": 0,
-        "regex": ".*$spinSvc.*",
+        "options": [],
+        "query": "label_values(up{job=~\".*$spinSvc.*\"}, job)",
+        "refresh": 1,
+        "regex": "",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",

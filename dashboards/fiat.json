@@ -435,31 +435,43 @@
   "templating": {
     "list": [
       {
-        "allValue": null,
         "current": {
-          "isNone": true,
-          "selected": false,
-          "text": "None",
-          "value": ""
+          "selected": true,
+          "text": "fiat",
+          "value": "fiat"
+        },
+        "hide": 2,
+        "label": null,
+        "name": "spinSvc",
+        "options": [
+          {
+            "selected": true,
+            "text": "fiat",
+            "value": "fiat"
+          }
+        ],
+        "query": "fiat",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
+        "allValue": "",
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
         },
         "datasource": "prometheus",
-        "definition": "label_values(up,job)",
+        "definition": "label_values(up{job=~\".*$spinSvc.*\"}, job)",
         "hide": 0,
-        "includeAll": false,
+        "includeAll": true,
         "label": null,
         "multi": false,
         "name": "job",
-        "options": [
-          {
-            "isNone": true,
-            "selected": true,
-            "text": "None",
-            "value": ""
-          }
-        ],
-        "query": "label_values(up,job)",
-        "refresh": 0,
-        "regex": ".*fiat*.",
+        "options": [],
+        "query": "label_values(up{job=~\".*$spinSvc.*\"}, job)",
+        "refresh": 1,
+        "regex": "",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
@@ -471,9 +483,11 @@
       {
         "allValue": ".*",
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "All",
-          "value": "$__all"
+          "value": [
+            "$__all"
+          ]
         },
         "datasource": "prometheus",
         "definition": "label_values(up{job=~\"$job\"}, instance)",
@@ -484,7 +498,7 @@
         "name": "Instance",
         "options": [],
         "query": "label_values(up{job=~\"$job\"}, instance)",
-        "refresh": 2,
+        "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
         "sort": 1,

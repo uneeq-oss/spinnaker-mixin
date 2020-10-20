@@ -1208,31 +1208,43 @@
   "templating": {
     "list": [
       {
-        "allValue": null,
         "current": {
-          "isNone": true,
-          "selected": false,
-          "text": "None",
-          "value": ""
+          "selected": true,
+          "text": "igor",
+          "value": "igor"
+        },
+        "hide": 2,
+        "label": null,
+        "name": "spinSvc",
+        "options": [
+          {
+            "selected": true,
+            "text": "igor",
+            "value": "igor"
+          }
+        ],
+        "query": "igor",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
+        "allValue": "",
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
         },
         "datasource": "prometheus",
-        "definition": "label_values(up,job)",
+        "definition": "label_values(up{job=~\".*$spinSvc.*\"}, job)",
         "hide": 0,
-        "includeAll": false,
+        "includeAll": true,
         "label": null,
         "multi": false,
         "name": "job",
-        "options": [
-          {
-            "isNone": true,
-            "selected": true,
-            "text": "None",
-            "value": ""
-          }
-        ],
-        "query": "label_values(up,job)",
-        "refresh": 0,
-        "regex": ".*igor*.",
+        "options": [],
+        "query": "label_values(up{job=~\".*$spinSvc.*\"}, job)",
+        "refresh": 1,
+        "regex": "",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
@@ -1242,7 +1254,7 @@
         "useTags": false
       },
       {
-        "allValue": null,
+        "allValue": ".*",
         "current": {
           "selected": true,
           "text": "All",
@@ -1251,18 +1263,18 @@
           ]
         },
         "datasource": "prometheus",
-        "definition": "label_values(up{job=\"$job\"}, instance)",
+        "definition": "label_values(up{job=~\"$job\"}, instance)",
         "hide": 0,
         "includeAll": true,
-        "label": "Instance",
-        "multi": true,
-        "name": "instance",
+        "label": null,
+        "multi": false,
+        "name": "Instance",
         "options": [],
-        "query": "label_values(up{job=\"$job\"}, instance)",
-        "refresh": 2,
+        "query": "label_values(up{job=~\"$job\"}, instance)",
+        "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 0,
+        "sort": 1,
         "tagValuesQuery": "",
         "tags": [],
         "tagsQuery": "",

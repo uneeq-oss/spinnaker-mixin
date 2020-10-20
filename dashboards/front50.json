@@ -1473,23 +1473,43 @@
   "templating": {
     "list": [
       {
-        "allValue": null,
         "current": {
-          "selected": false,
-          "text": "spin-front50",
-          "value": "spin-front50"
+          "selected": true,
+          "text": "front50",
+          "value": "front50"
+        },
+        "hide": 2,
+        "label": null,
+        "name": "spinSvc",
+        "options": [
+          {
+            "selected": true,
+            "text": "front50",
+            "value": "front50"
+          }
+        ],
+        "query": "front50",
+        "skipUrlSync": false,
+        "type": "constant"
+      },
+      {
+        "allValue": "",
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
         },
         "datasource": "prometheus",
-        "definition": "label_values(up, job)",
+        "definition": "label_values(up{job=~\".*$spinSvc.*\"}, job)",
         "hide": 0,
-        "includeAll": false,
+        "includeAll": true,
         "label": null,
         "multi": false,
         "name": "job",
         "options": [],
-        "query": "label_values(up, job)",
+        "query": "label_values(up{job=~\".*$spinSvc.*\"}, job)",
         "refresh": 1,
-        "regex": ".*front50*.",
+        "regex": "",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
@@ -1501,9 +1521,11 @@
       {
         "allValue": ".*",
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "All",
-          "value": "$__all"
+          "value": [
+            "$__all"
+          ]
         },
         "datasource": "prometheus",
         "definition": "label_values(up{job=~\"$job\"}, instance)",
