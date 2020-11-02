@@ -375,7 +375,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(bakesCompleted_duration_seconds_sum{instance=~\"$Instance\"}[$__interval])) by (region)\n/\nsum(rate(bakesCompleted_duration_seconds_count{instance=~\"$Instance\"}[$__interval])) by (region)",
+          "expr": "sum(rate(bakesCompleted_seconds_sum{instance=~\"$Instance\"}[$__interval])) by (region)\n/\nsum(rate(bakesCompleted_seconds_count{instance=~\"$Instance\"}[$__interval])) by (region)",
           "hide": false,
           "interval": "30s",
           "intervalFactor": 2,
