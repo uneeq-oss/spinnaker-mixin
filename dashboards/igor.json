@@ -78,7 +78,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (name) (\n  max_over_time(resilience4j_circuitbreaker_state{job=\"spin-igor\", state=~\".*open\", instance=~\"$Instance\"}[$__interval])\n)",
+          "expr": "sum by (name) (\n  max_over_time(resilience4j_circuitbreaker_state{job=~\"$job\", state=~\".*open\", instance=~\"$Instance\"}[$__interval])\n)",
           "interval": "30s",
           "intervalFactor": 1,
           "legendFormat": "{{name}}",
