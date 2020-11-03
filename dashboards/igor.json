@@ -178,7 +178,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (name) (\n  rate(resilience4j_circuitbreaker_failure_rate{job=\"spin-igor\", instance=~\"$Instance\"}[$__interval])\n)",
+          "expr": "sum by (name) (\n  rate(resilience4j_circuitbreaker_failure_rate{job=\"$job\", instance=~\"$Instance\"}[$__interval])\n)",
           "interval": "30s",
           "intervalFactor": 1,
           "legendFormat": "{{name}}",
@@ -276,7 +276,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (name) (\n  max_over_time(resilience4j_circuitbreaker_state{job=\"spin-igor\", state=\"half_open\", instance=~\"$Instance\"}[$__interval])\n)",
+          "expr": "sum by (name) (\n  max_over_time(resilience4j_circuitbreaker_state{job=\"$job\", state=\"half_open\", instance=~\"$Instance\"}[$__interval])\n)",
           "hide": true,
           "interval": "30s",
           "intervalFactor": 1,
@@ -375,7 +375,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (monitor) (\n  rate(pollingMonitor_pollTiming_seconds_count{job=\"spin-igor\", instance=~\"$Instance\"}[$__interval])\n)",
+          "expr": "sum by (monitor) (\n  rate(pollingMonitor_pollTiming_seconds_count{job=\"$job\", instance=~\"$Instance\"}[$__interval])\n)",
           "interval": "30s",
           "legendFormat": "{{monitor}}",
           "refId": "A"
@@ -470,7 +470,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (monitor) (rate(pollingMonitor_pollTiming_seconds_sum{job=\"spin-igor\", instance=~\"$Instance\"}[$__interval]))\n/\nsum by (monitor) (rate(pollingMonitor_pollTiming_seconds_count{job=\"spin-igor\", instance=~\"$Instance\"}[$__interval]))",
+          "expr": "sum by (monitor) (rate(pollingMonitor_pollTiming_seconds_sum{job=\"$job\", instance=~\"$Instance\"}[$__interval]))\n/\nsum by (monitor) (rate(pollingMonitor_pollTiming_seconds_count{job=\"$job\", instance=~\"$Instance\"}[$__interval]))",
           "interval": "30s",
           "legendFormat": "{{monitor}}",
           "refId": "A"
@@ -565,7 +565,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (monitor, partition) (\n  rate(pollingMonitor_failed_total{job=\"spin-igor\", instance=~\"$Instance\"}[$__interval])\n)",
+          "expr": "sum by (monitor, partition) (\n  rate(pollingMonitor_failed_total{job=\"$job\", instance=~\"$Instance\"}[$__interval])\n)",
           "interval": "30s",
           "legendFormat": "{{monitor}} / {{partition}}",
           "refId": "A"
@@ -660,7 +660,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (account) (\n  rate(pollingMonitor_docker_retrieveImagesByAccount_seconds_count{job=\"spin-igor\", instance=~\"$Instance\"}[$__interval])\n)",
+          "expr": "sum by (account) (\n  rate(pollingMonitor_docker_retrieveImagesByAccount_seconds_count{job=\"$job\", instance=~\"$Instance\"}[$__interval])\n)",
           "interval": "30s",
           "legendFormat": "{{account}}",
           "refId": "A"
@@ -755,7 +755,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (monitor, partition) (\n  max_over_time(pollingMonitor_itemsOverThreshold{job=\"spin-igor\", instance=~\"$Instance\"}[$__interval])\n)",
+          "expr": "sum by (monitor, partition) (\n  max_over_time(pollingMonitor_itemsOverThreshold{job=\"$job\", instance=~\"$Instance\"}[$__interval])\n)",
           "interval": "30s",
           "legendFormat": "{{ monitor }} / {{ partition }}",
           "refId": "A"
@@ -852,7 +852,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (controller, method, statusCode) (\n  rate(controller_invocations_total{job=~\"spin-igor\",status=\"5xx\", instance=~\"$Instance\"}[$__interval])\n)",
+          "expr": "sum by (controller, method, statusCode) (\n  rate(controller_invocations_total{job=~\"$job\",status=\"5xx\", instance=~\"$Instance\"}[$__interval])\n)",
           "format": "time_series",
           "interval": "30s",
           "intervalFactor": 2,
@@ -952,7 +952,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (controller, method) (\n  rate(controller_invocations_total{job=~\"spin-igor\", instance=~\"$Instance\"}[$__interval])\n)",
+          "expr": "sum by (controller, method) (\n  rate(controller_invocations_total{job=~\"$job\", instance=~\"$Instance\"}[$__interval])\n)",
           "format": "time_series",
           "interval": "30s",
           "intervalFactor": 1,
@@ -1052,7 +1052,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (controller, method) (rate(controller_invocations_seconds_sum{job=~\"spin-igor\", instance=~\"$Instance\"}[$__interval]))\n/\nsum by (controller, method) (rate(controller_invocations_seconds_count{job=~\"spin-igor\", instance=~\"$Instance\"}[$__interval]))",
+          "expr": "sum by (controller, method) (rate(controller_invocations_seconds_sum{job=~\"$job\", instance=~\"$Instance\"}[$__interval]))\n/\nsum by (controller, method) (rate(controller_invocations_seconds_count{job=~\"$job\", instance=~\"$Instance\"}[$__interval]))",
           "format": "time_series",
           "interval": "30s",
           "intervalFactor": 2,
@@ -1150,7 +1150,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (id) (\n  max_over_time(jvm_memory_used_bytes{job=\"spin-igor\", area=\"heap\", instance=~\"$Instance\"}[$__interval])\n)",
+          "expr": "sum by (id) (\n  max_over_time(jvm_memory_used_bytes{job=\"$job\", area=\"heap\", instance=~\"$Instance\"}[$__interval])\n)",
           "interval": "30s",
           "intervalFactor": 2,
           "legendFormat": "{{id}}",
