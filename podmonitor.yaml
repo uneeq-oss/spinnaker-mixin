@@ -13,8 +13,6 @@ spec:
     matchLabels:
       app.kubernetes.io/part-of: spinnaker
       prometheus.io/scrape: "true"
-  podTargetLabels:
-  - "app.kubernetes.io/name"
   podMetricsEndpoints:
   - targetPort: 8008
     path: /aop-prometheus
