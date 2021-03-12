@@ -3,6 +3,7 @@
 {
   grafanaDashboards+:: {
     'clouddriver.json': (import 'clouddriver.jsonnet'),
+    'deck.json': (import 'deck.jsonnet'),
     'echo.json': (import 'echo.jsonnet'),
     'fiat.json': (import 'fiat.jsonnet'),
     'front50.json': (import 'front50.jsonnet'),
