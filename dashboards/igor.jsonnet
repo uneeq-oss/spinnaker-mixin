@@ -65,7 +65,22 @@ grafana.dashboard.new(
 )
 
 .addRow(
-  grafana.row.new()
+  grafana.row.new(
+    title='Key Metrics',
+  )
+  .addPanel(
+    grafana.text.new(
+      title='Service Description',
+      content='Igor is a service that provides a single point of integration with Continuous Integration (CI) and Source Control Management (SCM) services for Spinnaker.',
+      span=3,
+    )
+  )
+)
+
+.addRow(
+  grafana.row.new(
+    title='Additional Metrics',
+  )
   .addPanel(
     grafana.graphPanel.new(
       title='Resilience4J Open',

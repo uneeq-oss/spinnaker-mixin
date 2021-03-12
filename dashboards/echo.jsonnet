@@ -65,7 +65,22 @@ grafana.dashboard.new(
 )
 
 .addRow(
-  grafana.row.new()
+  grafana.row.new(
+    title='Key Metrics',
+  )
+  .addPanel(
+    grafana.text.new(
+      title='Service Description',
+      content='Echo serves as two purposes within Spinnaker:\n\n1. a router for events\n   - incoming events, for example a new build is detected by Igor which should trigger a pipeline.\n   - outgoing events such as notifications via email, Slack, etc\n2. a scheduler for CRON triggered pipelines.',
+      span=3,
+    )
+  )
+)
+
+.addRow(
+  grafana.row.new(
+    title='Additional Metrics',
+  )
   .addPanel(
     grafana.graphPanel.new(
       title='Controller 5xx Errors (echo, $Instance)',

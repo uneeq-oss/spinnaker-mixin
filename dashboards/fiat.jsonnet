@@ -65,7 +65,22 @@ grafana.dashboard.new(
 )
 
 .addRow(
-  grafana.row.new()
+  grafana.row.new(
+    title='Key Metrics',
+  )
+  .addPanel(
+    grafana.text.new(
+      title='Service Description',
+      content='Fiat is the authorization server for the Spinnaker system.\n\nIt exposes a RESTful interface for querying the access permissions for a particular user. It currently supports three kinds of resources:\n-Accounts\n-Applications\n-Service Accounts\n',
+      span=3,
+    )
+  )
+)
+
+.addRow(
+  grafana.row.new(
+    title='Additional Metrics',
+  )
   .addPanel(
     grafana.graphPanel.new(
       title='5xx Controller Invocations (fiat, $Instance)',

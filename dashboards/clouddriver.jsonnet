@@ -87,6 +87,19 @@ grafana.dashboard.new(
 
 .addRow(
   grafana.row.new(
+    title='Key Metrics',
+  )
+  .addPanel(
+    grafana.text.new(
+      title='Service Description',
+      content='This srvice is the main integration point for Spinnaker cloud providers like AWS, Azure, CloudFoundry, GCP, Kubernetes, etc.',
+      span=3,
+    )
+  )
+)
+
+.addRow(
+  grafana.row.new(
     title='Errors',
   )
   .addPanel(

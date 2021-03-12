@@ -65,7 +65,22 @@ grafana.dashboard.new(
 )
 
 .addRow(
-  grafana.row.new()
+  grafana.row.new(
+    title='Key Metrics',
+  )
+  .addPanel(
+    grafana.text.new(
+      title='Service Description',
+      content='This service provides the Spinnaker REST API, servicing scripting clients as well as all actions from Deck. The REST API fronts the following services:\n\n- Clouddriver\n-Front50\n-Igor\n-Orca',
+      span=3,
+    )
+  )
+)
+
+.addRow(
+  grafana.row.new(
+    title='Additional Metrics',
+  )
   .addPanel(
     grafana.graphPanel.new(
       title='Resilience4J Open (gate, $Instance)',

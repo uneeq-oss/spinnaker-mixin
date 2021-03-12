@@ -65,7 +65,22 @@ grafana.dashboard.new(
 )
 
 .addRow(
-  grafana.row.new()
+  grafana.row.new(
+    title='Key Metrics',
+  )
+  .addPanel(
+    grafana.text.new(
+      title='Service Description',
+      content='Front50 is the system of record for all Spinnaker metadata, including: application, pipeline and service account configurations.\n\nAll metadata is durably stored and served out of an in-memory cache.',
+      span=3,
+    )
+  )
+)
+
+.addRow(
+  grafana.row.new(
+    title='Additional Metrics',
+  )
   .addPanel(
     grafana.graphPanel.new(
       title='Resilience4J Open (front50, $Instance)',
