@@ -21,12 +21,15 @@ jsonnet:
   only:
   - merge_requests
   variables:
+    JB_VERSION: "0.4.0"
     JSONNET_VERSION: "0.16.0"
   stage: lint
   script:
   - go mod init dummymod
+  - go get github.com/jsonnet-bundler/jsonnet-bundler/cmd/jb@v${JB_VERSION}
   - go get github.com/google/go-jsonnet/cmd/jsonnet@v${JSONNET_VERSION}
   - go get github.com/google/go-jsonnet/cmd/jsonnetfmt@v${JSONNET_VERSION}
+  - jb install github.com/grafana/grafonnet-lib
   - make lint-jsonnet
   - make dashboards_out prometheus_alerts.yaml prometheus_rules.yaml
 
