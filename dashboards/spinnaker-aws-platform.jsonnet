@@ -54,6 +54,7 @@ grafana.dashboard.new(
       title='AWS Delay by Service  (clouddriver, $Instance)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
@@ -74,6 +75,7 @@ grafana.dashboard.new(
       title='AWS Delay by Request (clouddriver, $Instance)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
@@ -97,7 +99,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(aws_request_httpRequestTime_seconds_count{instance=~"$Instance",serviceEndpoint=~".*$AwsRegion.*",error="true"}[$__interval])) by (serviceEndpoint, statusCode), "region", "$1", "serviceEndpoint", "[^\\\\.]+\\\\.([^\\\\.]+).*")',
+        'label_replace(sum(rate(aws_request_httpRequestTime_seconds_count{instance=~"$Instance",serviceEndpoint=~".*$AwsRegion.*",error="true"}[$__rate_interval])) by (serviceEndpoint, statusCode), "region", "$1", "serviceEndpoint", "[^\\\\.]+\\\\.([^\\\\.]+).*")',
         legendFormat='{{region}} / {{statusCode}}',
       )
     )
@@ -111,7 +113,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(label_replace(sum(rate(aws_request_httpRequestTime_seconds_count{instance=~"$Instance",serviceEndpoint=~".*$AwsRegion.*",error="true"}[$__interval])) by (requestType, serviceName, statusCode, AWSErrorCode), "requestType", "$1", "requestType", "(.*)Request(.*)"), "serviceName",  "$1", "serviceName", "Amazon(.+)")',
+        'label_replace(label_replace(sum(rate(aws_request_httpRequestTime_seconds_count{instance=~"$Instance",serviceEndpoint=~".*$AwsRegion.*",error="true"}[$__rate_interval])) by (requestType, serviceName, statusCode, AWSErrorCode), "requestType", "$1", "requestType", "(.*)Request(.*)"), "serviceName",  "$1", "serviceName", "Amazon(.+)")',
         legendFormat='{{statusCode}}/{{serviceName}}.{{requestType}}->{{AWSErrorCode}}',
       )
     )
@@ -125,7 +127,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(aws_request_httpRequestTime_seconds_count{instance=~"$Instance",serviceName="AmazonEC2", error="false"}[$__interval])) by (serviceEndpoint), "region", "$1", "serviceEndpoint", "[^\\\\.]+\\\\.([^\\\\.]+).*")',
+        'label_replace(sum(rate(aws_request_httpRequestTime_seconds_count{instance=~"$Instance",serviceName="AmazonEC2", error="false"}[$__rate_interval])) by (serviceEndpoint), "region", "$1", "serviceEndpoint", "[^\\\\.]+\\\\.([^\\\\.]+).*")',
         legendFormat='{{region}}',
       )
     )
@@ -139,7 +141,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(aws_request_httpRequestTime_seconds_count{instance=~"$Instance",serviceEndpoint=~".*$AwsRegion.*",serviceName="AmazonEC2", error="false"}[$__interval])) by (requestType, serviceName), "requestType", "$1", "requestType", "(.*)Request")',
+        'label_replace(sum(rate(aws_request_httpRequestTime_seconds_count{instance=~"$Instance",serviceEndpoint=~".*$AwsRegion.*",serviceName="AmazonEC2", error="false"}[$__rate_interval])) by (requestType, serviceName), "requestType", "$1", "requestType", "(.*)Request")',
         legendFormat='{{requestType}}',
       )
     )
@@ -150,10 +152,11 @@ grafana.dashboard.new(
       title='AWS EC2 Request Latency by Region  (clouddriver, $Instance)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(aws_request_httpRequestTime_seconds_sum{instance=~"$Instance",serviceEndpoint=~".*$AwsRegion.*",serviceName="AmazonEC2"}[$__interval])) by (serviceEndpoint, serviceName)\n/ sum(rate(aws_request_httpRequestTime_seconds_count{instance=~"$Instance",serviceName="AmazonEC2", error="false"}[$__interval])) by (serviceEndpoint, serviceName), "region", "$1", "serviceEndpoint", "[^\\\\.]+\\\\.([^\\\\.]+).*")',
+        'label_replace(sum(rate(aws_request_httpRequestTime_seconds_sum{instance=~"$Instance",serviceEndpoint=~".*$AwsRegion.*",serviceName="AmazonEC2"}[$__rate_interval])) by (serviceEndpoint, serviceName)\n/ sum(rate(aws_request_httpRequestTime_seconds_count{instance=~"$Instance",serviceName="AmazonEC2", error="false"}[$__rate_interval])) by (serviceEndpoint, serviceName), "region", "$1", "serviceEndpoint", "[^\\\\.]+\\\\.([^\\\\.]+).*")',
         legendFormat='{{region}}',
       )
     )
@@ -164,10 +167,11 @@ grafana.dashboard.new(
       title='AWS EC2 Request Latency in $AwsRegion  (clouddriver, $Instance)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(aws_request_httpRequestTime_seconds_sum{instance=~"$Instance",serviceEndpoint=~".*$AwsRegion.*",serviceName="AmazonEC2"}[$__interval])) by (requestType, serviceName)\n/ sum(rate(aws_request_httpRequestTime_seconds_count{instance=~"$Instance",serviceName="AmazonEC2", error="false"}[$__interval])) by (requestType, serviceName)',
+        'sum(rate(aws_request_httpRequestTime_seconds_sum{instance=~"$Instance",serviceEndpoint=~".*$AwsRegion.*",serviceName="AmazonEC2"}[$__rate_interval])) by (requestType, serviceName)\n/ sum(rate(aws_request_httpRequestTime_seconds_count{instance=~"$Instance",serviceName="AmazonEC2", error="false"}[$__rate_interval])) by (requestType, serviceName)',
         legendFormat='{{requestType}}',
       )
     )
@@ -181,7 +185,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(aws_request_httpRequestTime_seconds_count{instance=~"$Instance",serviceEndpoint=~".*$AwsRegion.*",serviceName!="AmazonEC2", error="false"}[$__interval])) by (serviceName, serviceEndpoint), "region", "$1", "serviceEndpoint", "[^\\\\.]+\\\\.([^\\\\.]+).*")',
+        'label_replace(sum(rate(aws_request_httpRequestTime_seconds_count{instance=~"$Instance",serviceEndpoint=~".*$AwsRegion.*",serviceName!="AmazonEC2", error="false"}[$__rate_interval])) by (serviceName, serviceEndpoint), "region", "$1", "serviceEndpoint", "[^\\\\.]+\\\\.([^\\\\.]+).*")',
         legendFormat='{{serviceName}} / {{region}}',
       )
     )
@@ -195,7 +199,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(aws_request_httpRequestTime_seconds_count{instance=~"$Instance",serviceEndpoint=~".*$AwsRegion.*",serviceName!="AmazonEC2", error="false"}[$__interval])) by (requestType, serviceName), "serviceName", "$1", "serviceName", "Amazon(.+)")',
+        'label_replace(sum(rate(aws_request_httpRequestTime_seconds_count{instance=~"$Instance",serviceEndpoint=~".*$AwsRegion.*",serviceName!="AmazonEC2", error="false"}[$__rate_interval])) by (requestType, serviceName), "serviceName", "$1", "serviceName", "Amazon(.+)")',
         legendFormat='{{serviceName}}.{{requestType}}',
       )
     )
@@ -206,10 +210,11 @@ grafana.dashboard.new(
       title='AWS Non-EC2 Request Latency by Region  (clouddriver, $Instance)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(label_replace(sum(rate(aws_request_httpRequestTime_seconds_sum{instance=~"$Instance",serviceEndpoint=~".*$AwsRegion.*",serviceName!="AmazonEC2"}[$__interval])) by (serviceEndpoint, serviceName)\n/ sum(rate(aws_request_httpRequestTime_seconds_count{serviceName!="AmazonEC2", error="false"}[$__interval])) by (serviceEndpoint, serviceName), "serviceName", "$1", "serviceName", "Amazon(.+)"), "region", "$1", "serviceEndpoint", "[^\\\\.]+\\\\.([^\\\\.]+).*")',
+        'label_replace(label_replace(sum(rate(aws_request_httpRequestTime_seconds_sum{instance=~"$Instance",serviceEndpoint=~".*$AwsRegion.*",serviceName!="AmazonEC2"}[$__rate_interval])) by (serviceEndpoint, serviceName)\n/ sum(rate(aws_request_httpRequestTime_seconds_count{serviceName!="AmazonEC2", error="false"}[$__rate_interval])) by (serviceEndpoint, serviceName), "serviceName", "$1", "serviceName", "Amazon(.+)"), "region", "$1", "serviceEndpoint", "[^\\\\.]+\\\\.([^\\\\.]+).*")',
         legendFormat='{{serviceName}} / {{region}}',
       )
     )
@@ -220,10 +225,11 @@ grafana.dashboard.new(
       title='AWS Non-EC2 Request Latency in $AwsRegion  (clouddriver, $Instance)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(label_replace(sum(rate(aws_request_httpRequestTime_seconds_sum{instance=~"$Instance",serviceEndpoint=~".*$AwsRegion.*",serviceName!="AmazonEC2"}[$__interval])) by (requestType, serviceName)\n/\nsum(rate(aws_request_httpRequestTime_seconds_count{serviceName!="AmazonEC2", error="false"}[$__interval])) by (requestType, serviceName), "serviceName", "$1", "serviceName", "Amazon(.+)"), "requestType", "$1", "requestType", "(.*)Request")',
+        'label_replace(label_replace(sum(rate(aws_request_httpRequestTime_seconds_sum{instance=~"$Instance",serviceEndpoint=~".*$AwsRegion.*",serviceName!="AmazonEC2"}[$__rate_interval])) by (requestType, serviceName)\n/\nsum(rate(aws_request_httpRequestTime_seconds_count{serviceName!="AmazonEC2", error="false"}[$__rate_interval])) by (requestType, serviceName), "serviceName", "$1", "serviceName", "Amazon(.+)"), "requestType", "$1", "requestType", "(.*)Request")',
         legendFormat='{{serviceName}}.{{requestType}}',
       )
     )

@@ -39,13 +39,13 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(\n  rate(echo_triggers_count[$__interval])\n)',
+        'sum(\n  rate(echo_triggers_count[$__rate_interval])\n)',
         legendFormat='triggers/s',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(\n  rate(echo_events_processed_total[$__interval])\n)',
+        'sum(\n  rate(echo_events_processed_total[$__rate_interval])\n)',
         legendFormat='events processed/s',
       )
     )
@@ -81,7 +81,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum by (container, status) (\n  rate(controller_invocations_total[$__interval])\n )',
+        'sum by (container, status) (\n  rate(controller_invocations_total[$__rate_interval])\n )',
         legendFormat='{{ status }} :: {{ container }}',
       )
     )
@@ -95,7 +95,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum by (container, requestHost, status) (\n  rate(okhttp_requests_seconds_count[$__interval])\n)',
+        'sum by (container, requestHost, status) (\n  rate(okhttp_requests_seconds_count[$__rate_interval])\n)',
       )
     )
   )
@@ -105,6 +105,7 @@ grafana.dashboard.new(
       datasource='$datasource',
       description='cache.drift tracks cache freshness. \n\nYou should group this by agent and region to be granular on exactly what cache collection is falling behind. How much lag is acceptable for your org is up to you, but don’t make it zero.',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(

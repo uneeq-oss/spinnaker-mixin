@@ -103,7 +103,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(resilience4j_circuitbreaker_failure_rate{job=~"$job", instance=~"$Instance"}[$__interval])) by (name)',
+        'sum(rate(resilience4j_circuitbreaker_failure_rate{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (name)',
         legendFormat='{{ name }}',
       )
     )
@@ -129,7 +129,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'rate(rateLimitThrottling_total{instance=~"$Instance"}[$__interval])',
+        'rate(rateLimitThrottling_total{instance=~"$Instance"}[$__rate_interval])',
         legendFormat='',
       )
     )
@@ -142,13 +142,13 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(controller_invocations_seconds_count{job=~"$job", instance=~"$Instance",status="5xx"}[$__interval])) by (controller, method, statusCode)',
+        'sum(rate(controller_invocations_seconds_count{job=~"$job", instance=~"$Instance",status="5xx"}[$__rate_interval])) by (controller, method, statusCode)',
         legendFormat='{{statusCode}}/{{controller}}/{{method}}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(controller_invocations_seconds_count{job=~"$job", instance=~"$Instance",statusCode="429"}[$__interval])) by (controller, method, statusCode)',
+        'sum(rate(controller_invocations_seconds_count{job=~"$job", instance=~"$Instance",statusCode="429"}[$__rate_interval])) by (controller, method, statusCode)',
         legendFormat='{{statusCode}}/{{controller}}/{{method}}',
       )
     )
@@ -161,7 +161,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(controller_invocations_seconds_count{job=~"$job", instance=~"$Instance"}[$__interval])) by (controller, method)',
+        'sum(rate(controller_invocations_seconds_count{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (controller, method)',
         legendFormat='{{controller}}/{{method}}',
       )
     )
@@ -171,10 +171,11 @@ grafana.dashboard.new(
       title='Controller Invocation Latency by Method (gate, $Instance)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(controller_invocations_seconds_sum{job=~"$job", instance=~"$Instance"}[$__interval])) by (controller, method)\n/\nsum(rate(controller_invocations_seconds_count{job=~"$job", instance=~"$Instance"}[$__interval])) by (controller, method)',
+        'sum(rate(controller_invocations_seconds_sum{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (controller, method)\n/\nsum(rate(controller_invocations_seconds_count{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (controller, method)',
         legendFormat='{{controller}}/{{method}}',
       )
     )
@@ -190,6 +191,7 @@ grafana.dashboard.new(
       title='JVM Memory Usage ($spinSvc, $Instance)',
       datasource='$datasource',
       span=3,
+      format='decbytes',
     )
     .addTarget(
       grafana.prometheus.target(

@@ -92,6 +92,7 @@ grafana.dashboard.new(
     .addTarget(
       grafana.prometheus.target(
         'sum by (executionType) (\n  executions_active{container="orca"}\n)',
+        legendFormat='{{ executionType }}'
       )
     )
   )
@@ -101,10 +102,11 @@ grafana.dashboard.new(
       description='If you’ve got a lot of 500’s, check your logs. \n\nWhen we see a spike in either invocation times or 5xx errors, it’s usually one of two things: \n\n1) Clouddriver is having a bad day, \n\n2) Orca doesn’t have enough capacity in some respect to service people polling for pipeline status updates. \n\nYou’ll need to dig elsewhere to find the cause.',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum by (controller, status) (\n  rate(controller_invocations_seconds_sum{container="orca"}[$__interval])\n) \n/\nsum by (controller, status) (\n  rate(controller_invocations_seconds_count{container="orca"}[$__interval])\n)\n',
+        'sum by (controller, status) (\n  rate(controller_invocations_seconds_sum{container="orca"}[$__rate_interval])\n) \n/\nsum by (controller, status) (\n  rate(controller_invocations_seconds_count{container="orca"}[$__rate_interval])\n)\n',
       )
     )
   )
@@ -117,7 +119,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum by (executionType) (\n  rate(task_invocations_duration_seconds_count{container="orca"}[$__interval])\n)',
+        'sum by (executionType) (\n  rate(task_invocations_duration_seconds_count{container="orca"}[$__rate_interval])\n)',
       )
     )
   )
@@ -130,7 +132,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum by (application, executionType) (\n  rate(\n    task_invocations_duration_seconds_count{container="orca", status="RUNNING"}[$__interval])\n) ',
+        'sum by (application, executionType) (\n  rate(\n    task_invocations_duration_seconds_count{container="orca", status="RUNNING"}[$__rate_interval])\n) ',
         legendFormat='{{ application }} - {{ executionType }}',
       )
     )
@@ -170,13 +172,13 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(\n  rate(queue_pushed_messages_total{container="orca"}[$__interval])\n)',
+        'sum(\n  rate(queue_pushed_messages_total{container="orca"}[$__rate_interval])\n)',
         legendFormat='Pushed',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(\n  rate(queue_acknowledged_messages_total{container="orca"}[$__interval])\n)',
+        'sum(\n  rate(queue_acknowledged_messages_total{container="orca"}[$__rate_interval])\n)',
         legendFormat="Ack'd",
       )
     )
@@ -222,7 +224,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(\n  rate(queue_orphaned_messages{container="orca"}[$__interval])\n)',
+        'sum(\n  rate(queue_orphaned_messages{container="orca"}[$__rate_interval])\n)',
         legendFormat='orphaned',
       )
     )
@@ -233,6 +235,7 @@ grafana.dashboard.new(
       description='This is a measurement of a message’s desired delivery time and the actual delivery time: Smaller and tighter is better. This is a timer measurement of every message’s (usually very short) life in a ready state. When your queue gets backed up, this number will grow. \n\nWe consider this one of Orca’s key performance indicators.\n\nA mean message lag of anything under a few hundred milliseconds is fine. \n\nDon’t panic until you’re getting around a second. \n\nScale up, everything should be fine.',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
@@ -261,7 +264,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(controller_invocations_total{job=~"$job", instance=~"$Instance", status="5xx"}[$__interval])) by (controller, method, status)',
+        'sum(rate(controller_invocations_total{job=~"$job", instance=~"$Instance", status="5xx"}[$__rate_interval])) by (controller, method, status)',
         legendFormat='{{statusCode}}/{{controller}}/{{method}}',
       )
     )
@@ -274,7 +277,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(stage_invocations_duration_total{job=~"$job", instance=~"$Instance", bucket!="lt5m"}[$__interval])) by (stageType, cloudProvider, bucket)',
+        'sum(rate(stage_invocations_duration_total{job=~"$job", instance=~"$Instance", bucket!="lt5m"}[$__rate_interval])) by (stageType, cloudProvider, bucket)',
         legendFormat='{{bucket}}/{{cloudProvider}}/{{stageType}}',
       )
     )
@@ -287,7 +290,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(okhttp_requests_seconds_count{job=~"$job",instance=~"$Instance"}[$__interval])) by (statusCode)',
+        'sum(rate(okhttp_requests_seconds_count{job=~"$job",instance=~"$Instance"}[$__rate_interval])) by (statusCode)',
         legendFormat='{{statusCode}}',
       )
     )
@@ -297,10 +300,11 @@ grafana.dashboard.new(
       title='Ok Http Calls Latency by Request Host (orca, $Instance)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(okhttp_requests_seconds_sum{job=~"$job", instance=~"$Instance"}[$__interval])) by (requestHost)\n/\nsum(rate(okhttp_requests_seconds_count{job="$job", instance=~"$Instance"}[$__interval])) by (requestHost)',
+        'sum(rate(okhttp_requests_seconds_sum{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (requestHost)\n/\nsum(rate(okhttp_requests_seconds_count{job="$job", instance=~"$Instance"}[$__rate_interval])) by (requestHost)',
         legendFormat='{{requestHost}}',
       )
     )
@@ -313,7 +317,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(controller_invocations_total{job=~"$job", instance=~"$Instance"}[$__interval])) by (controller, method)',
+        'sum(rate(controller_invocations_total{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (controller, method)',
         legendFormat='{{controller}}/{{method}}',
       )
     )
@@ -324,10 +328,11 @@ grafana.dashboard.new(
       title='Controller Invocation Latency by Method (orca, $Instance)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(controller_invocations_seconds_sum{job=~"$job", instance=~"$Instance"}[$__interval])) by (controller, method)\n/\nsum(rate(controller_invocations_total{job=~"$job", instance=~"$Instance"}[$__interval])) by (controller, method)',
+        'sum(rate(controller_invocations_seconds_sum{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (controller, method)\n/\nsum(rate(controller_invocations_total{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (controller, method)',
         legendFormat='{{controller}}/{{method}}',
       )
     )
@@ -340,7 +345,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(stage_invocations_total{job=~"$job", instance=~"$Instance"}[$__interval])) by (cloudProvider, type)',
+        'sum(rate(stage_invocations_total{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (cloudProvider, type)',
         legendFormat='{{type}}/{{cloudProvider}}',
       )
     )
@@ -353,7 +358,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(stage_invocations_duration_total{job=~"$job", instance=~"$Instance"}[$__interval])) by (cloudProvider, stageType)',
+        'sum(rate(stage_invocations_duration_total{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (cloudProvider, stageType)',
         legendFormat='{{stageType}}/{{cloudProvider}}',
       )
     )
@@ -366,7 +371,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(threadpool_blockingQueueSize{job=~"$job", instance=~"$Instance"}[$__interval])) by (id)',
+        'sum(rate(threadpool_blockingQueueSize{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (id)',
         legendFormat='{{id}}',
       )
     )
@@ -443,19 +448,19 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(queue_retried_messages_total{job=~"$job", instance=~"$Instance"}[$__interval])) by (job)',
+        'sum(rate(queue_retried_messages_total{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (job)',
         legendFormat='Retried',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(queue_dead_messages_total{job=~"$job", instance=~"$Instance"}[$__interval])) by (job)',
+        'sum(rate(queue_dead_messages_total{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (job)',
         legendFormat='Dead',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(queue_orphaned_messages{job=~"$job", instance=~"$Instance"}[$__interval])) by (job)',
+        'sum(rate(queue_orphaned_messages{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (job)',
         legendFormat='Orphaned',
       )
     )
@@ -465,16 +470,17 @@ grafana.dashboard.new(
       title='Message Lag Time (orca, $Instance)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'rate(queue_message_lag_seconds_count{job=~"$job", instance=~"$Instance"}[$__interval])',
+        'rate(queue_message_lag_seconds_count{job=~"$job", instance=~"$Instance"}[$__rate_interval])',
         legendFormat='messages {{ instance }}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'rate(queue_message_lag_seconds_sum{job=~"$job", instance=~"$Instance"}[$__interval])\n/\nrate(queue_message_lag_seconds_count{job=~"$job", instance=~"$Instance"}[$__interval])',
+        'rate(queue_message_lag_seconds_sum{job=~"$job", instance=~"$Instance"}[$__rate_interval])\n/\nrate(queue_message_lag_seconds_count{job=~"$job", instance=~"$Instance"}[$__rate_interval])',
         legendFormat='lag time {{ instance }}',
       )
     )
@@ -488,13 +494,13 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(queue_pushed_messages_total{job=~"$job", instance=~"$Instance"}[$__interval])) by (instance)',
+        'sum(rate(queue_pushed_messages_total{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (instance)',
         legendFormat='Pushed/{{ instance }}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(queue_acknowledged_messages_total{instance=~"$Instance"}[$__interval])) by (instance)',
+        'sum(rate(queue_acknowledged_messages_total{instance=~"$Instance"}[$__rate_interval])) by (instance)',
         legendFormat='Acknowledged/{{ instance }}',
       )
     )
@@ -510,6 +516,7 @@ grafana.dashboard.new(
       title='JVM Memory Usage ($spinSvc, $Instance)',
       datasource='$datasource',
       span=3,
+      format='decbytes',
     )
     .addTarget(
       grafana.prometheus.target(

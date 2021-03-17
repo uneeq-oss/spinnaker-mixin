@@ -42,7 +42,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(stage_invocations_total{spinSvc="$spinSvc", application=~"$Application"}[$__interval])) by (application, type)',
+        'sum(rate(stage_invocations_total{spinSvc="$spinSvc", application=~"$Application"}[$__rate_interval])) by (application, type)',
         legendFormat='{{application}}/{{type}}',
       )
     )
@@ -56,7 +56,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(queue_pushed_messages_total{spinSvc="$spinSvc", application=~"$Application"}[$__interval])) by (application)',
+        'sum(rate(queue_pushed_messages_total{spinSvc="$spinSvc", application=~"$Application"}[$__rate_interval])) by (application)',
         legendFormat='{{application}}',
       )
     )
@@ -71,7 +71,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(pipelines_triggered_total{spinSvc=~"echo", application=~"$Application"}[$__interval])) by (name, application)',
+        'sum(rate(pipelines_triggered_total{spinSvc=~"echo", application=~"$Application"}[$__rate_interval])) by (name, application)',
         legendFormat='{{name}}({{application}})',
       )
     )
@@ -92,7 +92,7 @@ grafana.dashboard.new(
 
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(bakesRequested[$__interval])) by (flavor)',
+        'sum(rate(bakesRequested_total[$__rate_interval])) by (flavor)',
         legendFormat='Request({{flavor}})',
       )
     )
@@ -106,13 +106,13 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        '-1 * sum(rate(bakesCompleted_seconds_count{success="false"}[$__interval])) by (region)',
+        '-1 * sum(rate(bakesCompleted_seconds_count{success="false"}[$__rate_interval])) by (region)',
         legendFormat='Failed {{region}}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(bakesCompleted_seconds_sum[$__interval]) / 1000000000) by (region)\n/\nsum(rate(bakesCompleted_seconds_count[$__interval])) by (region)',
+        'sum(rate(bakesCompleted_seconds_sum[$__rate_interval]) / 1000000000) by (region)\n/\nsum(rate(bakesCompleted_seconds_count[$__rate_interval])) by (region)',
         legendFormat='{{region}}',
       )
     )
@@ -140,7 +140,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(resilience4j_circuitbreaker_failure_rate[$__interval])) by (name, spinSvc)',
+        'sum(rate(resilience4j_circuitbreaker_failure_rate[$__rate_interval])) by (name, spinSvc)',
         legendFormat='{{spinSvc}}-{{name}}',
       )
     )

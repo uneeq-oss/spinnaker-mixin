@@ -86,7 +86,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(kubernetes_api_seconds_count{instance=~"$Instance",exported_namespace=~"$KubernetesNamespace",account=~"$KubernetesAccount",success="true"}[$__interval])) by (action)',
+        'sum(rate(kubernetes_api_seconds_count{instance=~"$Instance",exported_namespace=~"$KubernetesNamespace",account=~"$KubernetesAccount",success="true"}[$__rate_interval])) by (action)',
         legendFormat='{{action}}',
       )
     )
@@ -96,10 +96,11 @@ grafana.dashboard.new(
       title='Kubernetes Latency for "$KubernetesAccount" in "$KubernetesNamespace" (clouddriver)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(kubernetes_api_seconds_sum{instance=~"$Instance",exported_namespace=~"$KubernetesNamespace",success="true",account=~"$KubernetesAccount"}[$__interval])) by (action)\n/\nsum(rate(kubernetes_api_seconds_count{instance=~"$Instance",exported_namespace=~"$KubernetesNamespace",account=~"$KubernetesAccount",success="true"}[$__interval])) by (action)',
+        'sum(rate(kubernetes_api_seconds_sum{instance=~"$Instance",exported_namespace=~"$KubernetesNamespace",success="true",account=~"$KubernetesAccount"}[$__rate_interval])) by (action)\n/\nsum(rate(kubernetes_api_seconds_count{instance=~"$Instance",exported_namespace=~"$KubernetesNamespace",account=~"$KubernetesAccount",success="true"}[$__rate_interval])) by (action)',
         legendFormat='{{action}}',
       )
     )
@@ -112,7 +113,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(kubernetes_api_seconds_count{instance=~"$Instance",exported_namespace=~"$KubernetesNamespace",account=~"$KubernetesAccount",success!="true"}[$__interval])) by (action, reason)',
+        'sum(rate(kubernetes_api_seconds_count{instance=~"$Instance",exported_namespace=~"$KubernetesNamespace",account=~"$KubernetesAccount",success!="true"}[$__rate_interval])) by (action, reason)',
         legendFormat='{{action}}/{{reason}}',
       )
     )
@@ -122,10 +123,11 @@ grafana.dashboard.new(
       title='Kubernetes Failure Latency for "$KubernetesAccount" in "$KubernetesNamespace" (clouddriver)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(kubernetes_api_seconds_sum{instance=~"$Instance",exported_namespace=~"$KubernetesNamespace",success!="true",account=~"$KubernetesAccount"}[$__interval])) by (action, reason)\n/\nsum(rate(kubernetes_api_seconds_count{instance=~"$Instance",exported_namespace=~"$KubernetesNamespace",account=~"$KubernetesAccount",success!="true"}[$__interval])) by (action)',
+        'sum(rate(kubernetes_api_seconds_sum{instance=~"$Instance",exported_namespace=~"$KubernetesNamespace",success!="true",account=~"$KubernetesAccount"}[$__rate_interval])) by (action, reason)\n/\nsum(rate(kubernetes_api_seconds_count{instance=~"$Instance",exported_namespace=~"$KubernetesNamespace",account=~"$KubernetesAccount",success!="true"}[$__rate_interval])) by (action)',
         legendFormat='{{action}}',
       )
     )
@@ -138,7 +140,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(kubernetes_api_seconds_count{instance=~"$Instance",success="true"}[$__interval])) by (kinds)',
+        'sum(rate(kubernetes_api_seconds_count{instance=~"$Instance",success="true"}[$__rate_interval])) by (kinds)',
         legendFormat='{{kinds}}',
       )
     )
@@ -151,7 +153,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(kubernetes_api_seconds_count{instance=~"$Instance",success="true"}[$__interval])) by (account)',
+        'sum(rate(kubernetes_api_seconds_count{instance=~"$Instance",success="true"}[$__rate_interval])) by (account)',
         legendFormat='{{account}} ',
       )
     )
@@ -164,7 +166,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(kubernetes_api_seconds_count{instance=~"$Instance",success="true"}[$__interval])) by (exported_namespace)',
+        'sum(rate(kubernetes_api_seconds_count{instance=~"$Instance",success="true"}[$__rate_interval])) by (exported_namespace)',
         legendFormat='{{exported_namespace}} ',
       )
     )
@@ -174,10 +176,11 @@ grafana.dashboard.new(
       title='Kubernetes Latency by Kind (clouddriver)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(kubernetes_api_seconds_sum{instance=~"$Instance",success="true"}[$__interval])) by (kinds)\n/\nsum(rate(kubernetes_api_seconds_count{instance=~"$Instance",success="true"}[$__interval])) by (kinds)',
+        'sum(rate(kubernetes_api_seconds_sum{instance=~"$Instance",success="true"}[$__rate_interval])) by (kinds)\n/\nsum(rate(kubernetes_api_seconds_count{instance=~"$Instance",success="true"}[$__rate_interval])) by (kinds)',
         legendFormat='{{kinds}}',
       )
     )
@@ -187,10 +190,11 @@ grafana.dashboard.new(
       title='Kubernetes Latency by Account (clouddriver)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(kubernetes_api_seconds_sum{instance=~"$Instance",success="true"}[$__interval])) by (account)\n/\nsum(rate(kubernetes_api_seconds_count{instance=~"$Instance",success="true"}[$__interval])) by (account)',
+        'sum(rate(kubernetes_api_seconds_sum{instance=~"$Instance",success="true"}[$__rate_interval])) by (account)\n/\nsum(rate(kubernetes_api_seconds_count{instance=~"$Instance",success="true"}[$__rate_interval])) by (account)',
         legendFormat='{{account}}',
       )
     )
@@ -200,10 +204,11 @@ grafana.dashboard.new(
       title='Kubernetes Latency by Namespace (clouddriver)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(kubernetes_api_seconds_sum{instance=~"$Instance",success="true"}[$__interval])) by (exported_namespace) / sum(rate(kubernetes_api_seconds_count{instance=~"$Instance",success="true"}[$__interval])) by (exported_namespace)',
+        'sum(rate(kubernetes_api_seconds_sum{instance=~"$Instance",success="true"}[$__rate_interval])) by (exported_namespace) / sum(rate(kubernetes_api_seconds_count{instance=~"$Instance",success="true"}[$__rate_interval])) by (exported_namespace)',
         legendFormat='{{exported_namespace}}',
       )
     )
@@ -216,7 +221,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(kubernetes_api_seconds_count{instance=~"$Instance",success!="true"}[$__interval])) by (kinds)',
+        'sum(rate(kubernetes_api_seconds_count{instance=~"$Instance",success!="true"}[$__rate_interval])) by (kinds)',
         legendFormat='{{kinds}} ',
       )
     )
@@ -229,7 +234,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(kubernetes_api_seconds_count{instance=~"$Instance",success!="true"}[$__interval])) by (account)',
+        'sum(rate(kubernetes_api_seconds_count{instance=~"$Instance",success!="true"}[$__rate_interval])) by (account)',
         legendFormat='{{account}} ',
       )
     )
@@ -242,7 +247,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(kubernetes_api_seconds_count{instance=~"$Instance",success!="true"}[$__interval])) by (exported_namespace)',
+        'sum(rate(kubernetes_api_seconds_count{instance=~"$Instance",success!="true"}[$__rate_interval])) by (exported_namespace)',
         legendFormat='{{exported_namespace}} ',
       )
     )

@@ -68,7 +68,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(label_replace(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",status!="2xx"}[$__interval]), "resource", "$1", "api", "compute.(.*)\\\\..*")) by (resource, statusCode)',
+        'sum(label_replace(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",status!="2xx"}[$__rate_interval]), "resource", "$1", "api", "compute.(.*)\\\\..*")) by (resource, statusCode)',
         legendFormat='{{statusCode}}/{{resource}}',
       )
     )
@@ -82,19 +82,19 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",status!="2xx", scope="regional"}[$__interval])) by (region, statusCode)',
+        'sum(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",status!="2xx", scope="regional"}[$__rate_interval])) by (region, statusCode)',
         legendFormat='{{statusCode}}/{{region}}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(label_replace(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",status!="2xx",scope="zonal"}[$__interval]), "zoneRegion", "$1", "zone", "(.*)-.")) by (zoneRegion, statusCode)',
+        'sum(label_replace(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",status!="2xx",scope="zonal"}[$__rate_interval]), "zoneRegion", "$1", "zone", "(.*)-.")) by (zoneRegion, statusCode)',
         legendFormat='{{statusCode}}/{{zoneRegion}}+',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",status!="2xx",scope="global"}[$__interval])) by (zone, statusCode)',
+        'sum(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",status!="2xx",scope="global"}[$__rate_interval])) by (zone, statusCode)',
         legendFormat='{{statusCode}}/global',
       )
     )
@@ -108,7 +108,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(front50:google:storage:invocation__count_total{instance=~"$Front50Instance",status!="2xx"}[$__interval])) by (method, statusCode)',
+        'sum(rate(front50:google:storage:invocation__count_total{instance=~"$Front50Instance",status!="2xx"}[$__rate_interval])) by (method, statusCode)',
         legendFormat='{{statusCode}}/{{method}}',
       )
     )
@@ -122,13 +122,13 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(front50:google:storage:invocation__count_total{instance=~"$Front50Instance",status!="2xx"}[$__interval])) by (method, statusCode)',
+        'sum(rate(front50:google:storage:invocation__count_total{instance=~"$Front50Instance",status!="2xx"}[$__rate_interval])) by (method, statusCode)',
         legendFormat='{{statusCode}}/{{method}}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(front50:google:safeRetry__count_total{instance=~"$Front50Instance", success!="true"}[$__interval])) by (action)',
+        'sum(rate(front50:google:safeRetry__count_total{instance=~"$Front50Instance", success!="true"}[$__rate_interval])) by (action)',
         legendFormat='{{action}}',
       )
     )
@@ -147,13 +147,13 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(label_replace(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance"}[$__interval]), "resource", "$1", "api", "compute.(.*)\\\\..*")) by (resource)',
+        'sum(label_replace(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance"}[$__rate_interval]), "resource", "$1", "api", "compute.(.*)\\\\..*")) by (resource)',
         legendFormat='{{resource}}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(label_replace(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance"}[$__interval]), "resource", "$1", "api", "compute.(.*)\\\\..*")) by (resource, status, statusCode)',
+        'sum(label_replace(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance"}[$__rate_interval]), "resource", "$1", "api", "compute.(.*)\\\\..*")) by (resource, status, statusCode)',
         legendFormat='{{resource}}',
       )
     )
@@ -166,19 +166,19 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",scope="regional"}[$__interval])) by (region)',
+        'sum(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",scope="regional"}[$__rate_interval])) by (region)',
         legendFormat='{{region}}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(label_replace(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",scope="zonal"}[$__interval]), "zoneRegion", "$1", "zone", "(.*)-.")) by (zoneRegion)',
+        'sum(label_replace(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",scope="zonal"}[$__rate_interval]), "zoneRegion", "$1", "zone", "(.*)-.")) by (zoneRegion)',
         legendFormat='{{zoneRegion}}+',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",scope="global"}[$__interval])) by (zone)',
+        'sum(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",scope="global"}[$__rate_interval])) by (zone)',
         legendFormat='global',
       )
     )
@@ -197,7 +197,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",scope="global"}[$__interval])) by (api), "api", "$1", "api", "compute.(.*)")',
+        'label_replace(sum(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",scope="global"}[$__rate_interval])) by (api), "api", "$1", "api", "compute.(.*)")',
         legendFormat='{{api}}',
       )
     )
@@ -207,10 +207,11 @@ grafana.dashboard.new(
       title='Global GCP API Latency (clouddriver, $ClouddriverInstance)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(clouddriver:google:api__totalTime_total{instance=~"$ClouddriverInstance",scope="global"}[$__interval])) by (api) / sum(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",scope="global"}[$__interval])) by (api), "api", "$1", "api", "compute.(.*)")',
+        'label_replace(sum(rate(clouddriver:google:api__totalTime_total{instance=~"$ClouddriverInstance",scope="global"}[$__rate_interval])) by (api) / sum(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",scope="global"}[$__rate_interval])) by (api), "api", "$1", "api", "compute.(.*)")',
         legendFormat='{{api}}',
       )
     )
@@ -229,7 +230,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",scope="regional",region=~"$GcpRegion"}[$__interval])) by (api), "api", "$1", "api", "compute.(.*)")',
+        'label_replace(sum(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",scope="regional",region=~"$GcpRegion"}[$__rate_interval])) by (api), "api", "$1", "api", "compute.(.*)")',
         legendFormat='{{api}}',
       )
     )
@@ -240,10 +241,11 @@ grafana.dashboard.new(
       title='Regional GCP API Latency in $GcpRegion (clouddriver, $ClouddriverInstance)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(clouddriver:google:api__totalTime_total{instance=~"$ClouddriverInstance",scope="regional",region=~"$GcpRegion"}[$__interval])) by (api) / sum(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",scope="regional",region=~"$GcpRegion"}[$__interval])) by (api), "api", "$1", "api", "compute.(.*)")',
+        'label_replace(sum(rate(clouddriver:google:api__totalTime_total{instance=~"$ClouddriverInstance",scope="regional",region=~"$GcpRegion"}[$__rate_interval])) by (api) / sum(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",scope="regional",region=~"$GcpRegion"}[$__rate_interval])) by (api), "api", "$1", "api", "compute.(.*)")',
         legendFormat='{{api}}',
       )
     )
@@ -262,7 +264,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(label_replace(sum(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",scope="zonal",zone=~".*$GcpRegion.*"}[$__interval])) by (zone, api), "api", "$1", "api", "compute.(.*)"), "cell", "$1", "zone", ".*-(.)")',
+        'label_replace(label_replace(sum(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",scope="zonal",zone=~".*$GcpRegion.*"}[$__rate_interval])) by (zone, api), "api", "$1", "api", "compute.(.*)"), "cell", "$1", "zone", ".*-(.)")',
         legendFormat='{{api}}/{{cell}}',
       )
     )
@@ -272,10 +274,11 @@ grafana.dashboard.new(
       title='Zonal GCP API Latency in $GcpRegion (clouddriver, $ClouddriverInstance)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(clouddriver:google:api__totalTime_total{instance=~"$ClouddriverInstance",scope="zonal",zone=~".*$GcpRegion.*"}[$__interval])) by (api, zone) / sum(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",scope="zonal", zone=~".*$GcpRegion.*"}[$__interval])) by (api, zone), "api", "$1", "api", "compute.(.*)")',
+        'label_replace(sum(rate(clouddriver:google:api__totalTime_total{instance=~"$ClouddriverInstance",scope="zonal",zone=~".*$GcpRegion.*"}[$__rate_interval])) by (api, zone) / sum(rate(clouddriver:google:api__count_total{instance=~"$ClouddriverInstance",scope="zonal", zone=~".*$GcpRegion.*"}[$__rate_interval])) by (api, zone), "api", "$1", "api", "compute.(.*)")',
         legendFormat='{{api}}/{{zone}}',
       )
     )
@@ -294,7 +297,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(clouddriver:google:batchSize{instance=~"$ClouddriverInstance"}[$__interval])) by (context), "context", "$1$2", "context", "(.*)Caching(.*)")',
+        'label_replace(sum(rate(clouddriver:google:batchSize{instance=~"$ClouddriverInstance"}[$__rate_interval])) by (context), "context", "$1$2", "context", "(.*)Caching(.*)")',
         legendFormat='{{context}}',
       )
     )
@@ -307,7 +310,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(clouddriver:google:batchExecute__count_total{instance=~"$ClouddriverInstance"}[$__interval])) by (context), "context", "$1$2", "context", "(.*)Caching(.*)")',
+        'label_replace(sum(rate(clouddriver:google:batchExecute__count_total{instance=~"$ClouddriverInstance"}[$__rate_interval])) by (context), "context", "$1$2", "context", "(.*)Caching(.*)")',
         legendFormat='{{context}}',
       )
     )
@@ -317,10 +320,11 @@ grafana.dashboard.new(
       title='GCP Batch Latency (clouddriver, $ClouddriverInstance)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(rate(clouddriver:google:batchExecute__totalTime_total{instance=~"$ClouddriverInstance"}[$__interval]) / rate(clouddriver:google:batchExecute__count_total{instance=~"$ClouddriverInstance"}[$__interval]), "context", "$1$2", "context", "(.*)Caching(.*)")',
+        'label_replace(rate(clouddriver:google:batchExecute__totalTime_total{instance=~"$ClouddriverInstance"}[$__rate_interval]) / rate(clouddriver:google:batchExecute__count_total{instance=~"$ClouddriverInstance"}[$__rate_interval]), "context", "$1$2", "context", "(.*)Caching(.*)")',
         legendFormat='{{context}}',
       )
     )
@@ -339,7 +343,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(clouddriver:google:operationWaits__count_total{instance=~"$ClouddriverInstance",status="DONE"}[$__interval])) by (basePhase)',
+        'sum(rate(clouddriver:google:operationWaits__count_total{instance=~"$ClouddriverInstance",status="DONE"}[$__rate_interval])) by (basePhase)',
         legendFormat='{{basePhase}}',
       )
     )
@@ -352,7 +356,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(clouddriver:google:operationWaits__count_total{instance=~"$ClouddriverInstance",status!="DONE"}[$__interval])) by (basePhase, scope) ',
+        'sum(rate(clouddriver:google:operationWaits__count_total{instance=~"$ClouddriverInstance",status!="DONE"}[$__rate_interval])) by (basePhase, scope) ',
         legendFormat='{{scope}}/{{basePhase}}',
       )
     )
@@ -371,7 +375,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(clouddriver:google:operationWaits__totalTime_total{instance=~"$ClouddriverInstance",scope="global"}[$__interval])) by (basePhase) / sum(rate(clouddriver:google:operationWaits__count_total{instance=~"$ClouddriverInstance",scope="global"}[$__interval])) by (basePhase) ',
+        'sum(rate(clouddriver:google:operationWaits__totalTime_total{instance=~"$ClouddriverInstance",scope="global"}[$__rate_interval])) by (basePhase) / sum(rate(clouddriver:google:operationWaits__count_total{instance=~"$ClouddriverInstance",scope="global"}[$__rate_interval])) by (basePhase) ',
         legendFormat='{{basePhase}}',
       )
     )
@@ -385,7 +389,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(clouddriver:google:operationWaits__totalTime_total{instance=~"$ClouddriverInstance",scope="regional",region=~"$GcpRegion"}[$__interval])) by (region, basePhase) / sum(rate(clouddriver:google:operationWaits__count_total{instance=~"$ClouddriverInstance",scope="regional",region=~"$GcpRegion"}[$__interval])) by (region, basePhase) ',
+        'sum(rate(clouddriver:google:operationWaits__totalTime_total{instance=~"$ClouddriverInstance",scope="regional",region=~"$GcpRegion"}[$__rate_interval])) by (region, basePhase) / sum(rate(clouddriver:google:operationWaits__count_total{instance=~"$ClouddriverInstance",scope="regional",region=~"$GcpRegion"}[$__rate_interval])) by (region, basePhase) ',
         legendFormat='{{basePhase}}//{{region}}',
       )
     )
@@ -399,7 +403,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(label_replace(rate(clouddriver:google:operationWaits__totalTime_total{instance=~"$ClouddriverInstance",scope="zonal",zone=~".*$GcpRegion.*"}[$__interval]), "cell", "$1", "zone", ".*-(.)")) by (basePhase, cell) / sum(label_replace(rate(clouddriver:google:operationWaits__count_total{instance=~"$ClouddriverInstance",scope="zonal",zone=~".*$GcpRegion.*"}[$__interval]), "cell", "$1", "zone", ".*-(.)")) by (basePhase, cell) ',
+        'sum(label_replace(rate(clouddriver:google:operationWaits__totalTime_total{instance=~"$ClouddriverInstance",scope="zonal",zone=~".*$GcpRegion.*"}[$__rate_interval]), "cell", "$1", "zone", ".*-(.)")) by (basePhase, cell) / sum(label_replace(rate(clouddriver:google:operationWaits__count_total{instance=~"$ClouddriverInstance",scope="zonal",zone=~".*$GcpRegion.*"}[$__rate_interval]), "cell", "$1", "zone", ".*-(.)")) by (basePhase, cell) ',
         legendFormat='{{basePhase}}/{{cell}}',
       )
     )
@@ -418,7 +422,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(clouddriver:google:operationWaitRequests{instance=~"$ClouddriverInstance",scope="global"}[$__interval])) by (basePhase)',
+        'sum(rate(clouddriver:google:operationWaitRequests{instance=~"$ClouddriverInstance",scope="global"}[$__rate_interval])) by (basePhase)',
         legendFormat='{{basePhase}}',
       )
     )
@@ -432,7 +436,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(clouddriver:google:operationWaitRequests{instance=~"$ClouddriverInstance",scope="regional",region=~"$GcpRegion"}[$__interval])) by (basePhase)',
+        'sum(rate(clouddriver:google:operationWaitRequests{instance=~"$ClouddriverInstance",scope="regional",region=~"$GcpRegion"}[$__rate_interval])) by (basePhase)',
         legendFormat='{{basePhase}}',
       )
     )
@@ -446,7 +450,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(clouddriver:google:operationWaitRequests{instance=~"$ClouddriverInstance",scope="zonal",zone=~".*$GcpRegion.*"}[$__interval])) by (basePhase)',
+        'sum(rate(clouddriver:google:operationWaitRequests{instance=~"$ClouddriverInstance",scope="zonal",zone=~".*$GcpRegion.*"}[$__rate_interval])) by (basePhase)',
         legendFormat='{{basePhase}}',
       )
     )
@@ -465,7 +469,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(label_replace(rate(clouddriver:google:safeRetry__count_total{instance=~"$ClouddriverInstance",scope="global"}[$__interval]), "operation", "$1", "operation", "compute.(.*)")) by (operation, phase)',
+        'sum(label_replace(rate(clouddriver:google:safeRetry__count_total{instance=~"$ClouddriverInstance",scope="global"}[$__rate_interval]), "operation", "$1", "operation", "compute.(.*)")) by (operation, phase)',
         legendFormat='{{phase}}.{{operation}}',
       )
     )
@@ -481,10 +485,11 @@ grafana.dashboard.new(
       title='Retryable Regional GCP in $GcpRegion (clouddriver, $ClouddriverInstance)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(clouddriver:google:safeRetry__count_total{instance=~"$ClouddriverInstance",scope="regional",region=~"$GcpRegion"}[$__interval])) by (instance, phase, operation), "operation", "$1", "operation", "compute.(.*)")',
+        'label_replace(sum(rate(clouddriver:google:safeRetry__count_total{instance=~"$ClouddriverInstance",scope="regional",region=~"$GcpRegion"}[$__rate_interval])) by (instance, phase, operation), "operation", "$1", "operation", "compute.(.*)")',
         legendFormat='{{phase}}.{{operation}}',
       )
     )
@@ -498,7 +503,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(label_replace(sum(rate(clouddriver:google:safeRetry__count_total{instance=~"$ClouddriverInstance",scope="zonal",zone=~".*$GcpRegion.*"}[$__interval])) by (instance, phase, operation, cell), "operation", "$1", "operation", "compute.(.*)"), "cell", "$1", "zone", ".*-(.)")',
+        'label_replace(label_replace(sum(rate(clouddriver:google:safeRetry__count_total{instance=~"$ClouddriverInstance",scope="zonal",zone=~".*$GcpRegion.*"}[$__rate_interval])) by (instance, phase, operation, cell), "operation", "$1", "operation", "compute.(.*)"), "cell", "$1", "zone", ".*-(.)")',
         legendFormat='{{phase}}.{{operation}}/{{cell}}',
       )
     )
@@ -509,10 +514,11 @@ grafana.dashboard.new(
       title='Retryable Global GCP Latency (clouddriver, $ClouddriverInstance)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(clouddriver:google:safeRetry__totalTime_total{instance=~"$ClouddriverInstance",scope="global"}[$__interval])) by (operation, phase) / sum(rate(clouddriver:google:safeRetry__count_total{instance=~"$ClouddriverInstance",scope="global"}[$__interval])) by (operation, phase), "operation", "$1", "operation", "compute.(.*)")',
+        'label_replace(sum(rate(clouddriver:google:safeRetry__totalTime_total{instance=~"$ClouddriverInstance",scope="global"}[$__rate_interval])) by (operation, phase) / sum(rate(clouddriver:google:safeRetry__count_total{instance=~"$ClouddriverInstance",scope="global"}[$__rate_interval])) by (operation, phase), "operation", "$1", "operation", "compute.(.*)")',
         legendFormat='{{phase}}.{{operation}}',
       )
     )
@@ -523,10 +529,11 @@ grafana.dashboard.new(
       title='Retryable Regional GCP Latency in $GcpRegion (clouddriver, $ClouddriverInstance)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(clouddriver:google:safeRetry__totalTime_total{instance=~"$ClouddriverInstance",scope="regional",region=~"$GcpRegion"}[$__interval])) by (operation, phase) / sum(rate(clouddriver:google:safeRetry__count_total{instance=~"$ClouddriverInstance",scope="regional",region=~"$GcpRegion"}[$__interval])) by (operation, phase), "operation", "$1", "operation", "compute.(.*)")',
+        'label_replace(sum(rate(clouddriver:google:safeRetry__totalTime_total{instance=~"$ClouddriverInstance",scope="regional",region=~"$GcpRegion"}[$__rate_interval])) by (operation, phase) / sum(rate(clouddriver:google:safeRetry__count_total{instance=~"$ClouddriverInstance",scope="regional",region=~"$GcpRegion"}[$__rate_interval])) by (operation, phase), "operation", "$1", "operation", "compute.(.*)")',
         legendFormat='{{phase}}.{{operation}}',
       )
     )
@@ -536,10 +543,11 @@ grafana.dashboard.new(
       title='Retryable Zonal GCP Latency in $GcpRegion (clouddriver, $ClouddriverInstance)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(label_replace(sum(rate(clouddriver:google:safeRetry__totalTime_total{instance=~"$ClouddriverInstance",scope="zonal",zone=~".*$GcpRegion.*"}[$__interval])) by (operation, phase, zone) / sum(rate(clouddriver:google:safeRetry__count_total{instance=~"$ClouddriverInstance",scope="zonal",zone=~".*$GcpRegion.*"}[$__interval])) by (operation, phase, zone), "cell", "$1", "zone", ".*-(.)")) by (phase, operation, cell), "operation", "$1", "operation", "compute.(.*)")',
+        'label_replace(sum(label_replace(sum(rate(clouddriver:google:safeRetry__totalTime_total{instance=~"$ClouddriverInstance",scope="zonal",zone=~".*$GcpRegion.*"}[$__rate_interval])) by (operation, phase, zone) / sum(rate(clouddriver:google:safeRetry__count_total{instance=~"$ClouddriverInstance",scope="zonal",zone=~".*$GcpRegion.*"}[$__rate_interval])) by (operation, phase, zone), "cell", "$1", "zone", ".*-(.)")) by (phase, operation, cell), "operation", "$1", "operation", "compute.(.*)")',
         legendFormat='{{phase}}.{{operation}}/{{cell}}',
       )
     )
@@ -559,7 +567,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(front50:google:storage:invocation__count_total{instance=~"$Front50Instance"}[$__interval])) by (method)',
+        'sum(rate(front50:google:storage:invocation__count_total{instance=~"$Front50Instance"}[$__rate_interval])) by (method)',
         legendFormat='{{method}}',
       )
     )
@@ -570,10 +578,11 @@ grafana.dashboard.new(
       title='Google Storage Service Latency (front50, $Front50Instance)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(front50:google:storage:invocation__totalTime_total{instance=~"$Front50Instance"}[$__interval])) by (method) / sum(rate(front50:google:storage:invocation__count_total{instance=~"$Front50Instance"}[$__interval])) by (method)',
+        'sum(rate(front50:google:storage:invocation__totalTime_total{instance=~"$Front50Instance"}[$__rate_interval])) by (method) / sum(rate(front50:google:storage:invocation__count_total{instance=~"$Front50Instance"}[$__rate_interval])) by (method)',
         legendFormat='{{method}}',
       )
     )

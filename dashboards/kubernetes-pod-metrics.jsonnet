@@ -7,7 +7,7 @@ grafana.row.new(
 .addPanel(
   grafana.graphPanel.new(
     title='CPU',
-    description='CPU Usage. Average is the average usage across all instaces, max is the highest usage across all instances. As CPU Usage is a sampled metric it is best to view in relation to throttling percentage.',
+    description='CPU Usage. Average is the average usage across all instances, max is the highest usage across all instances. As CPU Usage is a sampled metric it is best to view in relation to throttling percentage.',
     datasource='$datasource',
     span=3,
     fill=0,
@@ -29,14 +29,14 @@ grafana.row.new(
   })
   .addTarget(
     grafana.prometheus.target(
-      'avg(rate(container_cpu_usage_seconds_total{container=~"$spinSvc"}[$__interval]))',
+      'avg(rate(container_cpu_usage_seconds_total{container=~"$spinSvc"}[$__rate_interval]))',
       legendFormat='avg',
       interval='1m',
     )
   )
   .addTarget(
     grafana.prometheus.target(
-      'max(rate(container_cpu_usage_seconds_total{container="$spinSvc"}[$__interval]))',
+      'max(rate(container_cpu_usage_seconds_total{container="$spinSvc"}[$__rate_interval]))',
       legendFormat='max',
       interval='1m',
     )
@@ -65,7 +65,7 @@ grafana.row.new(
   )
   .addTarget(
     grafana.prometheus.target(
-      'rate(container_cpu_cfs_throttled_periods_total{container="$spinSvc"}[$__interval])\n/\nrate(container_cpu_cfs_periods_total{container="$spinSvc"}[$__interval])',
+      'rate(container_cpu_cfs_throttled_periods_total{container="$spinSvc"}[$__rate_interval])\n/\nrate(container_cpu_cfs_periods_total{container="$spinSvc"}[$__rate_interval])',
       legendFormat='{{pod}}',
       interval='1m',
     )
@@ -78,7 +78,7 @@ grafana.row.new(
     datasource='$datasource',
     span=3,
     fill=0,
-    format='bytes',
+    format='decbytes',
   )
   .addSeriesOverride({
     alias: '/avg|max/',
@@ -128,13 +128,13 @@ grafana.row.new(
   })
   .addTarget(
     grafana.prometheus.target(
-      'avg(\n  sum without (interface) (\n    rate(container_network_receive_bytes_total{pod=~"$spinSvc.*"}[$__interval])\n  )\n)',
+      'avg(\n  sum without (interface) (\n    rate(container_network_receive_bytes_total{pod=~"$spinSvc.*"}[$__rate_interval])\n  )\n)',
       legendFormat='receive',
     )
   )
   .addTarget(
     grafana.prometheus.target(
-      'avg(\n  sum without (interface) (\n    rate(container_network_transmit_bytes_total{pod=~"$spinSvc.*"}[$__interval])\n  )\n)',
+      'avg(\n  sum without (interface) (\n    rate(container_network_transmit_bytes_total{pod=~"$spinSvc.*"}[$__rate_interval])\n  )\n)',
       legendFormat='transmit',
     )
   )

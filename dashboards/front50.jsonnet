@@ -103,7 +103,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(resilience4j_circuitbreaker_failure_rate{job=~"$job", instance=~"$Instance"}[$__interval])) by (name)',
+        'sum(rate(resilience4j_circuitbreaker_failure_rate{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (name)',
         legendFormat='{{ name }}',
       )
     )
@@ -129,7 +129,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(controller_invocations_total{job=~"$job", instance=~"$Instance", status="5xx"}[$__interval])) by (controller, method, statusCode)',
+        'sum(rate(controller_invocations_total{job=~"$job", instance=~"$Instance", status="5xx"}[$__rate_interval])) by (controller, method, statusCode)',
         legendFormat='{{statusCode}}/{{controller}}/{{method}}',
       )
     )
@@ -142,13 +142,13 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(storageServiceSupport_autoRefreshTime_seconds_sum{instance=~"$Instance"}[$__interval])) by (objectType)',
+        'sum(rate(storageServiceSupport_autoRefreshTime_seconds_sum{instance=~"$Instance"}[$__rate_interval])) by (objectType)',
         legendFormat='force/{{objectType}}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        '-1 * (sum(rate(storageServiceSupport_scheduledRefreshTime_seconds_sum{instance=~"$Instance"}[$__interval])) by (objectType))',
+        '-1 * (sum(rate(storageServiceSupport_scheduledRefreshTime_seconds_sum{instance=~"$Instance"}[$__rate_interval])) by (objectType))',
         legendFormat='{{objectType}}',
       )
     )
@@ -161,7 +161,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(controller_invocations_total{job=~"$job", instance=~"$Instance"}[$__interval])) by (controller, method)',
+        'sum(rate(controller_invocations_total{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (controller, method)',
         legendFormat='{{controller}}/{{method}}',
       )
     )
@@ -184,10 +184,11 @@ grafana.dashboard.new(
       title='Controller Invocation Latency by Method (front50, $Instance)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(controller_invocations_seconds_sum{job=~"$job", instance=~"$Instance"}[$__interval])) by (controller, method)\n/ \nsum(rate(controller_invocations_seconds_count{job=~"$job", instance=~"$Instance"}[$__interval])) by (controller, method)',
+        'sum(rate(controller_invocations_seconds_sum{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (controller, method)\n/ \nsum(rate(controller_invocations_seconds_count{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (controller, method)',
         legendFormat='{{controller}}/{{method}}',
       )
     )
@@ -210,13 +211,13 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(storageServiceSupport_numAdded_total{instance=~"$Instance"}[$__interval])) by (objectType)',
+        'sum(rate(storageServiceSupport_numAdded_total{instance=~"$Instance"}[$__rate_interval])) by (objectType)',
         legendFormat='add {{objectType}}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        '-1 * sum(rate(storageServiceSupport_numRemoved_total{instance=~"$Instance"}[$__interval])) by (objectType)',
+        '-1 * sum(rate(storageServiceSupport_numRemoved_total{instance=~"$Instance"}[$__rate_interval])) by (objectType)',
         legendFormat='del {{objectType}}',
       )
     )
@@ -230,7 +231,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(front50:google:storage:invocation__count_total{instance=~"$Instance"}[$__interval])) by (method)',
+        'sum(rate(front50:google:storage:invocation__count_total{instance=~"$Instance"}[$__rate_interval])) by (method)',
         legendFormat='{{method}}',
       )
     )
@@ -245,7 +246,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(storageServiceSupport_numUpdated_total{instance=~"$Instance"}[$__interval])) by (objectType)',
+        'sum(rate(storageServiceSupport_numUpdated_total{instance=~"$Instance"}[$__rate_interval])) by (objectType)',
         legendFormat='{{objectType}}',
       )
     )
@@ -259,7 +260,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(front50:google:storage:invocation__totalTime_total{instance=~"$Instance"}[$__interval])) by (method) / sum(rate(front50:google:storage:invocation__count_total{instance=~"$Instance"}[$__interval])) by (method)',
+        'sum(rate(front50:google:storage:invocation__totalTime_total{instance=~"$Instance"}[$__rate_interval])) by (method) / sum(rate(front50:google:storage:invocation__count_total{instance=~"$Instance"}[$__rate_interval])) by (method)',
         legendFormat='{{method}}',
       )
     )
@@ -269,6 +270,7 @@ grafana.dashboard.new(
       title='Item Cache Age (front50, $Instance)',
       datasource='$datasource',
       span=3,
+      format='dtdurationms',
     )
     .addTarget(
       grafana.prometheus.target(
@@ -288,6 +290,7 @@ grafana.dashboard.new(
       title='JVM Memory Usage ($spinSvc, $Instance)',
       datasource='$datasource',
       span=3,
+      format='decbytes',
     )
     .addTarget(
       grafana.prometheus.target(

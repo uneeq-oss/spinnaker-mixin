@@ -90,7 +90,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(controller_invocations_total{job="$job",instance=~"$Instance",status="5xx"}[$__interval])) by (controller, method, statusCode)',
+        'sum(rate(controller_invocations_total{job="$job",instance=~"$Instance",status="5xx"}[$__rate_interval])) by (controller, method, statusCode)',
         legendFormat='{{statusCode}}/{{controller}}/{{method}}',
       )
     )
@@ -103,7 +103,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(controller_invocations_total{job=~"$job", instance=~"$Instance"}[$__interval])) by (controller, method)',
+        'sum(rate(controller_invocations_total{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (controller, method)',
         legendFormat='{{controller}}/{{method}}',
       )
     )
@@ -113,10 +113,11 @@ grafana.dashboard.new(
       title='Controller Invocation Latency by Method (rosco, $Instance)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(controller_invocations_seconds_sum{job=~"$job", instance=~"$Instance"}[$__interval])) by (controller, method)\n/\nsum(rate(controller_invocations_seconds_count{job=~"$job", instance=~"$Instance"}[$__interval])) by (controller, method)',
+        'sum(rate(controller_invocations_seconds_sum{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (controller, method)\n/\nsum(rate(controller_invocations_seconds_count{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (controller, method)',
         legendFormat='{{controller}}/{{method}}',
       )
     )
@@ -129,7 +130,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(bakesCompleted_seconds_sum{instance=~"$Instance"}[$__interval])) by (region)\n/\nsum(rate(bakesCompleted_seconds_count{instance=~"$Instance"}[$__interval])) by (region)',
+        'sum(rate(bakesCompleted_seconds_sum{instance=~"$Instance"}[$__rate_interval])) by (region)\n/\nsum(rate(bakesCompleted_seconds_count{instance=~"$Instance"}[$__rate_interval])) by (region)',
         legendFormat='{{region}}',
       )
     )
@@ -148,13 +149,13 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(bakesRequested{instance=~"$Instance"}[$__interval])) by (flavor)',
+        'sum(rate(bakesRequested{instance=~"$Instance"}[$__rate_interval])) by (flavor)',
         legendFormat='Request/{{flavor}}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        '-1 * sum(rate(bakesCompleted{instance=~"$Instance",success="false"}[$__interval])) by (region)',
+        '-1 * sum(rate(bakesCompleted{instance=~"$Instance",success="false"}[$__rate_interval])) by (region)',
         legendFormat='Failed/{{region}}',
       )
     )
@@ -170,6 +171,7 @@ grafana.dashboard.new(
       title='JVM Memory Usage ($spinSvc, $Instance)',
       datasource='$datasource',
       span=3,
+      format='decbytes',
     )
     .addTarget(
       grafana.prometheus.target(

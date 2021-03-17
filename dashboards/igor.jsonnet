@@ -90,7 +90,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum by (name) (\n  max_over_time(resilience4j_circuitbreaker_state{job=~"$job", state=~".*open", instance=~"$Instance"}[$__interval])\n)',
+        'sum by (name) (\n  max_over_time(resilience4j_circuitbreaker_state{job=~"$job", state=~".*open", instance=~"$Instance"}[$__rate_interval])\n)',
         legendFormat='{{name}}',
       )
     )
@@ -103,7 +103,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum by (name) (\n  rate(resilience4j_circuitbreaker_failure_rate{job="$job", instance=~"$Instance"}[$__interval])\n)',
+        'sum by (name) (\n  rate(resilience4j_circuitbreaker_failure_rate{job="$job", instance=~"$Instance"}[$__rate_interval])\n)',
         legendFormat='{{name}}',
       )
     )
@@ -117,7 +117,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum by (name) (\n  max_over_time(resilience4j_circuitbreaker_state{job="$job", state="half_open", instance=~"$Instance"}[$__interval])\n)',
+        'sum by (name) (\n  max_over_time(resilience4j_circuitbreaker_state{job="$job", state="half_open", instance=~"$Instance"}[$__rate_interval])\n)',
         legendFormat='{{name}}',
       )
     )
@@ -131,7 +131,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum by (monitor) (\n  rate(pollingMonitor_pollTiming_seconds_count{job="$job", instance=~"$Instance"}[$__interval])\n)',
+        'sum by (monitor) (\n  rate(pollingMonitor_pollTiming_seconds_count{job="$job", instance=~"$Instance"}[$__rate_interval])\n)',
         legendFormat='{{monitor}}',
       )
     )
@@ -142,10 +142,11 @@ grafana.dashboard.new(
       description='Failed Poll requests per sec by monitor and partition.',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum by (monitor) (rate(pollingMonitor_pollTiming_seconds_sum{job="$job", instance=~"$Instance"}[$__interval]))\n/\nsum by (monitor) (rate(pollingMonitor_pollTiming_seconds_count{job="$job", instance=~"$Instance"}[$__interval]))',
+        'sum by (monitor) (rate(pollingMonitor_pollTiming_seconds_sum{job="$job", instance=~"$Instance"}[$__rate_interval]))\n/\nsum by (monitor) (rate(pollingMonitor_pollTiming_seconds_count{job="$job", instance=~"$Instance"}[$__rate_interval]))',
         legendFormat='{{monitor}}',
       )
     )
@@ -160,7 +161,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum by (monitor, partition) (\n  rate(pollingMonitor_failed_total{job="$job", instance=~"$Instance"}[$__interval])\n)',
+        'sum by (monitor, partition) (\n  rate(pollingMonitor_failed_total{job="$job", instance=~"$Instance"}[$__rate_interval])\n)',
         legendFormat='{{monitor}} / {{partition}}',
       )
     )
@@ -213,7 +214,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum by (controller, method) (\n  rate(controller_invocations_total{job=~"$job", instance=~"$Instance"}[$__interval])\n)',
+        'sum by (controller, method) (\n  rate(controller_invocations_total{job=~"$job", instance=~"$Instance"}[$__rate_interval])\n)',
         legendFormat='{{controller}}/{{method}}',
       )
     )
@@ -223,10 +224,11 @@ grafana.dashboard.new(
       title='Controller Invocation Latency by Method',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum by (controller, method) (rate(controller_invocations_seconds_sum{job=~"$job", instance=~"$Instance"}[$__interval]))\n/\nsum by (controller, method) (rate(controller_invocations_seconds_count{job=~"$job", instance=~"$Instance"}[$__interval]))',
+        'sum by (controller, method) (rate(controller_invocations_seconds_sum{job=~"$job", instance=~"$Instance"}[$__rate_interval]))\n/\nsum by (controller, method) (rate(controller_invocations_seconds_count{job=~"$job", instance=~"$Instance"}[$__rate_interval]))',
         legendFormat='{{controller}}/{{method}}',
       )
     )
@@ -242,6 +244,7 @@ grafana.dashboard.new(
       title='JVM Memory Usage ($spinSvc, $Instance)',
       datasource='$datasource',
       span=3,
+      format='decbytes',
     )
     .addTarget(
       grafana.prometheus.target(

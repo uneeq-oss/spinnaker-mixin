@@ -111,7 +111,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(controller_invocations_total{job=~"$job",instance=~"$Instance",status="5xx",account=~"$Account"}[$__interval])) by (controller, method, statusCode)',
+        'sum(rate(controller_invocations_total{job=~"$job",instance=~"$Instance",status="5xx",account=~"$Account"}[$__rate_interval])) by (controller, method, statusCode)',
         legendFormat='{{statusCode}}/{{controller}}/{{method}}'
       )
     )
@@ -143,7 +143,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(controller_invocations_total{job=~"$job", instance=~"$Instance",account=~"$Account"}[$__interval])) by (controller, method)',
+        'sum(rate(controller_invocations_total{job=~"$job", instance=~"$Instance",account=~"$Account"}[$__rate_interval])) by (controller, method)',
         legendFormat='{{controller}}/{{method}}',
       )
     )
@@ -156,7 +156,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(controller_invocations_total{job=~"$job", instance=~"$Instance",account=~"$Account"}[$__interval])) by (controller, method)',
+        'sum(rate(controller_invocations_total{job=~"$job", instance=~"$Instance",account=~"$Account"}[$__rate_interval])) by (controller, method)',
         legendFormat='{{controller}}/{{method}}',
       )
     )
@@ -166,16 +166,17 @@ grafana.dashboard.new(
       title='$Account Controller Invocation Latency by Method (clouddriver, $Instance)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(operations_seconds_sum{success!="true"}[$__interval])) by (OperationType)\n/\nsum(rate(operations_seconds_count[$__interval])) by (OperationType)',
+        'sum(rate(operations_seconds_sum{success!="true"}[$__rate_interval])) by (OperationType)\n/\nsum(rate(operations_seconds_count[$__rate_interval])) by (OperationType)',
         legendFormat='{{OperationType}}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(controller_invocations_seconds_sum{job=~"$job", instance=~"$Instance",account=~"$Account"}[$__interval])) by (controller, method) \n/\nsum(rate(controller_invocations_seconds_count{job=~"$job", instance=~"$Instance",account=~"$Account"}[$__interval])) by (controller, method)',
+        'sum(rate(controller_invocations_seconds_sum{job=~"$job", instance=~"$Instance",account=~"$Account"}[$__rate_interval])) by (controller, method) \n/\nsum(rate(controller_invocations_seconds_count{job=~"$job", instance=~"$Instance",account=~"$Account"}[$__rate_interval])) by (controller, method)',
         legendFormat='{{controller}}/{{method}}',
       )
     )
@@ -188,7 +189,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(tasks_total{job=~"$job", instance=~"$Instance"}[$__interval])) by (instance)',
+        'sum(rate(tasks_total{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (instance)',
         legendFormat='{{instance}}',
       )
     )
@@ -201,7 +202,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(operations_seconds_count{job=~"$job", instance=~"$Instance"}[$__interval])) by (OperationType)',
+        'sum(rate(operations_seconds_count{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (OperationType)',
         legendFormat='{{OperationType}}',
       )
     )
@@ -214,7 +215,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(executionCount_total{job=~"$job", instance=~"$Instance"}[$__interval])) by (instance)',
+        'sum(rate(executionCount_total{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (instance)',
         legendFormat='{{instance}}',
       )
     )
@@ -227,7 +228,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(operations_seconds_sum{job=~"$job",instance=~"$Instance"}[$__interval])) by (OperationType)\n/\nsum(rate(operations_seconds_count{job=~"$job",instance=~"$Instance"}[$__interval])) by (OperationType)',
+        'sum(rate(operations_seconds_sum{job=~"$job",instance=~"$Instance"}[$__rate_interval])) by (OperationType)\n/\nsum(rate(operations_seconds_count{job=~"$job",instance=~"$Instance"}[$__rate_interval])) by (OperationType)',
         legendFormat='{{OperationType}}',
       )
     )
@@ -237,10 +238,11 @@ grafana.dashboard.new(
       title='Execution Latency by Instance (clouddriver, $Instance)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(executionTime_seconds_sum{job=~"$job",instance=~"$Instance"}[$__interval])) by (instance)\n/\nsum(rate(executionTime_seconds_count{job=~"$job",instance=~"$Instance"}[$__interval])) by (instance)',
+        'sum(rate(executionTime_seconds_sum{job=~"$job",instance=~"$Instance"}[$__rate_interval])) by (instance)\n/\nsum(rate(executionTime_seconds_count{job=~"$job",instance=~"$Instance"}[$__rate_interval])) by (instance)',
         legendFormat='{{instance}}',
       )
     )
@@ -253,7 +255,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(onDemand_read_seconds_count{job=~"$job",providerName=~".*$Platform.*", instance=~"$Instance"}[$__interval])) by (onDemandType)',
+        'sum(rate(onDemand_read_seconds_count{job=~"$job",providerName=~".*$Platform.*", instance=~"$Instance"}[$__rate_interval])) by (onDemandType)',
         legendFormat='{{onDemandType}}',
       )
     )
@@ -266,7 +268,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum by (provider, account) (\n# provider\nlabel_replace(\n# account\nlabel_replace(\n# query\n(sum(rate(executionTime_seconds_count{job=~"$job", agent=~".*$Platform.*",instance=~"$Instance"}[$__interval])) by (agent)\n),\n"account", "$1", "agent", "^[A-Za-z]+/([A-Za-z0-9-]+).*"\n), \n"provider", "$1", "agent", "^([A-Za-z]+).*"\n)\n)',
+        'sum by (provider, account) (\n# provider\nlabel_replace(\n# account\nlabel_replace(\n# query\n(sum(rate(executionTime_seconds_count{job=~"$job", agent=~".*$Platform.*",instance=~"$Instance"}[$__rate_interval])) by (agent)\n),\n"account", "$1", "agent", "^[A-Za-z]+/([A-Za-z0-9-]+).*"\n), \n"provider", "$1", "agent", "^([A-Za-z]+).*"\n)\n)',
         legendFormat='{{ provider }} :: {{ account }}',
       )
     )
@@ -276,10 +278,11 @@ grafana.dashboard.new(
       title='On Demand Read Latency by Type (clouddriver, $Instance, $Platform)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(onDemand_read_seconds_sum{job=~"$job",providerName=~".*$Platform.*", instance=~"$Instance"}[$__interval])) by (onDemandType)\n/\nsum(rate(onDemand_read_seconds_count{job=~"$job",providerName=~".*$Platform.*", instance=~"$Instance"}[$__interval])) by (onDemandType)',
+        'sum(rate(onDemand_read_seconds_sum{job=~"$job",providerName=~".*$Platform.*", instance=~"$Instance"}[$__rate_interval])) by (onDemandType)\n/\nsum(rate(onDemand_read_seconds_count{job=~"$job",providerName=~".*$Platform.*", instance=~"$Instance"}[$__rate_interval])) by (onDemandType)',
         legendFormat='{{onDemandType}}',
       )
     )
@@ -295,16 +298,17 @@ grafana.dashboard.new(
       title='Cache Agent Execution Latency by Account (clouddriver, $Instance, $Platform)',
       datasource='$datasource',
       span=3,
+      format='dtdurations',
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum by (provider, account) (\n# provider\nlabel_replace(\n# account\nlabel_replace(\n# query\n(sum(rate(executionTime_seconds_sum{job=~"$job", agent=~".*$Platform.*",instance=~"$Instance"}[$__interval])) by (agent)\n),\n"account", "$1", "agent", "^[A-Za-z]+/([A-Za-z0-9-]+).*"\n), \n"provider", "$1", "agent", "^([A-Za-z]+).*"\n)\n)\n\n/\n\nsum by (provider, account) (\n# provider\nlabel_replace(\n# account\nlabel_replace(\n# query\n(sum(rate(executionTime_seconds_count{job=~"$job", agent=~".*$Platform.*",instance=~"$Instance"}[$__interval])) by (agent)\n),\n"account", "$1", "agent", "^[A-Za-z]+/([A-Za-z0-9-]+).*"\n), \n"provider", "$1", "agent", "^([A-Za-z]+).*"\n)\n)',
+        'sum by (provider, account) (\n# provider\nlabel_replace(\n# account\nlabel_replace(\n# query\n(sum(rate(executionTime_seconds_sum{job=~"$job", agent=~".*$Platform.*",instance=~"$Instance"}[$__rate_interval])) by (agent)\n),\n"account", "$1", "agent", "^[A-Za-z]+/([A-Za-z0-9-]+).*"\n), \n"provider", "$1", "agent", "^([A-Za-z]+).*"\n)\n)\n\n/\n\nsum by (provider, account) (\n# provider\nlabel_replace(\n# account\nlabel_replace(\n# query\n(sum(rate(executionTime_seconds_count{job=~"$job", agent=~".*$Platform.*",instance=~"$Instance"}[$__rate_interval])) by (agent)\n),\n"account", "$1", "agent", "^[A-Za-z]+/([A-Za-z0-9-]+).*"\n), \n"provider", "$1", "agent", "^([A-Za-z]+).*"\n)\n)',
         legendFormat='{{ provider }} :: {{ account }}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(\nsum(rate(executionTime_seconds_sum{agent=~".*$Platform.*",instance=~"$Instance"}[$__interval])) by (agent)\n/\nsum(rate(executionTime_seconds_count{agent=~".*$Platform.*",instance=~"$Instance"}[$__interval])) by (agent), "itemType", "$1", "agent", "(?:.*(?:Amazon|Appengine|Google|Kubernetes|Dcos|/)([^/]*)CachingAgent.*)")',
+        'label_replace(\nsum(rate(executionTime_seconds_sum{agent=~".*$Platform.*",instance=~"$Instance"}[$__rate_interval])) by (agent)\n/\nsum(rate(executionTime_seconds_count{agent=~".*$Platform.*",instance=~"$Instance"}[$__rate_interval])) by (agent), "itemType", "$1", "agent", "(?:.*(?:Amazon|Appengine|Google|Kubernetes|Dcos|/)([^/]*)CachingAgent.*)")',
         legendFormat='TBC',
       )
     )
@@ -317,13 +321,13 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(cats_sqlCache_get_relationshipsRequested_total{prefix=~"com.netflix.*", instance=~"$Instance"}[$__interval])) by (prefix), "platform", "$1", "prefix", ".*.clouddriver.([^\\\\.]*).*")',
+        'label_replace(sum(rate(cats_sqlCache_get_relationshipsRequested_total{prefix=~"com.netflix.*", instance=~"$Instance"}[$__rate_interval])) by (prefix), "platform", "$1", "prefix", ".*.clouddriver.([^\\\\.]*).*")',
         legendFormat='{{platform}}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(cats_sqlCache_get_relationshipsRequested_total{prefix!~"com.netflix.*", instance=~"$Instance"}[$__interval])) by (prefix), "platform", "$1", "prefix", "([^\\\\./]*).*")',
+        'label_replace(sum(rate(cats_sqlCache_get_relationshipsRequested_total{prefix!~"com.netflix.*", instance=~"$Instance"}[$__rate_interval])) by (prefix), "platform", "$1", "prefix", "([^\\\\./]*).*")',
         legendFormat='{{platform}}',
       )
     )
@@ -336,7 +340,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(cats_sqlCache_get_relationshipsRequested_total{prefix=~".*.$Platform.*", instance=~"$Instance"}[$__interval])) by (type)',
+        'sum(rate(cats_sqlCache_get_relationshipsRequested_total{prefix=~".*.$Platform.*", instance=~"$Instance"}[$__rate_interval])) by (type)',
         legendFormat='{{type}}',
       )
     )
@@ -349,13 +353,13 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(cats_sqlCache_get_itemCount_total{prefix=~"com.netflix.*", instance=~"$Instance"}[$__interval])) by (prefix), "platform", "$1", "prefix", ".*.clouddriver.([^\\\\.]*).*")',
+        'label_replace(sum(rate(cats_sqlCache_get_itemCount_total{prefix=~"com.netflix.*", instance=~"$Instance"}[$__rate_interval])) by (prefix), "platform", "$1", "prefix", ".*.clouddriver.([^\\\\.]*).*")',
         legendFormat='{{platform}}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(cats_sqlCache_get_itemCount_total{prefix!~"com.netflix.*", instance=~"$Instance"}[$__interval])) by (prefix), "platform", "$1", "prefix", "([^\\\\./]*).*")',
+        'label_replace(sum(rate(cats_sqlCache_get_itemCount_total{prefix!~"com.netflix.*", instance=~"$Instance"}[$__rate_interval])) by (prefix), "platform", "$1", "prefix", "([^\\\\./]*).*")',
         legendFormat='{{platform}}',
       )
     )
@@ -368,7 +372,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(cats_sqlCache_get_itemCount_total{prefix=~".*.$Platform.*", instance=~"$Instance"}[$__interval])) by (type)',
+        'sum(rate(cats_sqlCache_get_itemCount_total{prefix=~".*.$Platform.*", instance=~"$Instance"}[$__rate_interval])) by (type)',
         legendFormat='{{type}}',
       )
     )
@@ -381,13 +385,13 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(cats_sqlCache_merge_relationshipCount_total{prefix=~"com.netflix.*", instance=~"$Instance"}[$__interval])) by (prefix), "platform", "$1", "prefix", ".*.clouddriver.([^\\\\.]*).*")',
+        'label_replace(sum(rate(cats_sqlCache_merge_relationshipCount_total{prefix=~"com.netflix.*", instance=~"$Instance"}[$__rate_interval])) by (prefix), "platform", "$1", "prefix", ".*.clouddriver.([^\\\\.]*).*")',
         legendFormat='{{platform}}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(cats_sqlCache_merge_relationshipCount_total{prefix!~"com.netflix.*", instance=~"$Instance"}[$__interval])) by (prefix), "platform", "$1", "prefix", "([^\\\\./]*).*")',
+        'label_replace(sum(rate(cats_sqlCache_merge_relationshipCount_total{prefix!~"com.netflix.*", instance=~"$Instance"}[$__rate_interval])) by (prefix), "platform", "$1", "prefix", "([^\\\\./]*).*")',
         legendFormat='{{platform}}',
       )
     )
@@ -400,7 +404,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(cats_sqlCache_merge_relationshipCount_total{prefix=~".*.$Platform.*", instance=~"$Instance"}[$__interval])) by (type)',
+        'sum(rate(cats_sqlCache_merge_relationshipCount_total{prefix=~".*.$Platform.*", instance=~"$Instance"}[$__rate_interval])) by (type)',
         legendFormat='{{type}}',
       )
     )
@@ -413,13 +417,13 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(cats_sqlCache_merge_itemCount_total{prefix=~"com.netflix.*", instance=~"$Instance"}[$__interval])) by (prefix), "platform", "$1", "prefix", ".*.clouddriver.([^\\\\.]*).*")',
+        'label_replace(sum(rate(cats_sqlCache_merge_itemCount_total{prefix=~"com.netflix.*", instance=~"$Instance"}[$__rate_interval])) by (prefix), "platform", "$1", "prefix", ".*.clouddriver.([^\\\\.]*).*")',
         legendFormat='{{platform}}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(cats_sqlCache_merge_itemCount_total{prefix!~"com.netflix.*", instance=~"$Instance"}[$__interval])) by (prefix), "platform", "$1", "prefix", "([^\\\\./]*).*")',
+        'label_replace(sum(rate(cats_sqlCache_merge_itemCount_total{prefix!~"com.netflix.*", instance=~"$Instance"}[$__rate_interval])) by (prefix), "platform", "$1", "prefix", "([^\\\\./]*).*")',
         legendFormat='{{platform}}',
       )
     )
@@ -432,7 +436,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(cats_sqlCache_merge_itemCount_total{prefix=~".*.$Platform.*", instance=~"$Instance"}[$__interval])) by (type)',
+        'sum(rate(cats_sqlCache_merge_itemCount_total{prefix=~".*.$Platform.*", instance=~"$Instance"}[$__rate_interval])) by (type)',
         legendFormat='{{type}}',
       )
     )
@@ -445,13 +449,13 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(cats_sqlCache_evict_itemCount_total{prefix=~"com.netflix.*", instance=~"$Instance"}[$__interval])) by (prefix), "platform", "$1", "prefix", ".*.clouddriver.([^\\\\.]*).*")',
+        'label_replace(sum(rate(cats_sqlCache_evict_itemCount_total{prefix=~"com.netflix.*", instance=~"$Instance"}[$__rate_interval])) by (prefix), "platform", "$1", "prefix", ".*.clouddriver.([^\\\\.]*).*")',
         legendFormat='{{platform}}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(cats_sqlCache_evict_itemCount_total{prefix!~"com.netflix.*", instance=~"$Instance"}[$__interval])) by (prefix), "platform", "$1", "prefix", "([^\\\\./]*).*")',
+        'label_replace(sum(rate(cats_sqlCache_evict_itemCount_total{prefix!~"com.netflix.*", instance=~"$Instance"}[$__rate_interval])) by (prefix), "platform", "$1", "prefix", "([^\\\\./]*).*")',
         legendFormat='{{platform}}',
       )
     )
@@ -464,7 +468,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(cats_sqlCache_evict_itemCount_total{prefix=~".*.$Platform.*", instance=~"$Instance"}[$__interval])) by (type)',
+        'sum(rate(cats_sqlCache_evict_itemCount_total{prefix=~".*.$Platform.*", instance=~"$Instance"}[$__rate_interval])) by (type)',
         legendFormat='{{type}}',
       )
     )
@@ -483,13 +487,13 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(cats_redisCache_get_keysRequested_total{prefix=~"com.netflix.*", instance=~"$Instance"}[$__interval])) by (prefix), "platform", "$1", "prefix", ".*.clouddriver.([^\\\\.]*).*")',
+        'label_replace(sum(rate(cats_redisCache_get_keysRequested_total{prefix=~"com.netflix.*", instance=~"$Instance"}[$__rate_interval])) by (prefix), "platform", "$1", "prefix", ".*.clouddriver.([^\\\\.]*).*")',
         legendFormat='{{platform}}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(cats_redisCache_get_keysRequested_total{prefix!~"com.netflix.*", instance=~"$Instance"}[$__interval])) by (prefix), "platform", "$1", "prefix", "([^\\\\./]*).*")',
+        'label_replace(sum(rate(cats_redisCache_get_keysRequested_total{prefix!~"com.netflix.*", instance=~"$Instance"}[$__rate_interval])) by (prefix), "platform", "$1", "prefix", "([^\\\\./]*).*")',
         legendFormat='{{platform}}',
       )
     )
@@ -502,7 +506,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(cats_redisCache_get_keysRequested_total{prefix=~".*.$Platform.*", instance=~"$Instance"}[$__interval])) by (type)',
+        'sum(rate(cats_redisCache_get_keysRequested_total{prefix=~".*.$Platform.*", instance=~"$Instance"}[$__rate_interval])) by (type)',
         legendFormat='{{type}}',
       )
     )
@@ -515,13 +519,13 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(cats_redisCache_get_itemCount_total{prefix=~"com.netflix.*", instance=~"$Instance"}[$__interval])) by (prefix), "platform", "$1", "prefix", ".*.clouddriver.([^\\\\.]*).*")',
+        'label_replace(sum(rate(cats_redisCache_get_itemCount_total{prefix=~"com.netflix.*", instance=~"$Instance"}[$__rate_interval])) by (prefix), "platform", "$1", "prefix", ".*.clouddriver.([^\\\\.]*).*")',
         legendFormat='{{platform}}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(cats_redisCache_get_itemCount_total{prefix!~"com.netflix.*", instance=~"$Instance"}[$__interval])) by (prefix), "platform", "$1", "prefix", "([^\\\\./]*).*")',
+        'label_replace(sum(rate(cats_redisCache_get_itemCount_total{prefix!~"com.netflix.*", instance=~"$Instance"}[$__rate_interval])) by (prefix), "platform", "$1", "prefix", "([^\\\\./]*).*")',
         legendFormat='{{platform}}',
       )
     )
@@ -534,7 +538,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(cats_redisCache_get_itemCount_total{prefix=~".*.$Platform.*", instance=~"$Instance"}[$__interval])) by (type)',
+        'sum(rate(cats_redisCache_get_itemCount_total{prefix=~".*.$Platform.*", instance=~"$Instance"}[$__rate_interval])) by (type)',
         legendFormat='{{type}}',
       )
     )
@@ -547,13 +551,13 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(cats_redisCache_merge_keysWritten_total{prefix=~"com.netflix.*", instance=~"$Instance"}[$__interval])) by (prefix), "platform", "$1", "prefix", ".*.clouddriver.([^\\\\.]*).*")',
+        'label_replace(sum(rate(cats_redisCache_merge_keysWritten_total{prefix=~"com.netflix.*", instance=~"$Instance"}[$__rate_interval])) by (prefix), "platform", "$1", "prefix", ".*.clouddriver.([^\\\\.]*).*")',
         legendFormat='{{platform}}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(cats_redisCache_merge_keysWritten_total{prefix!~"com.netflix.*", instance=~"$Instance"}[$__interval])) by (prefix), "platform", "$1", "prefix", "([^\\\\./]*).*")',
+        'label_replace(sum(rate(cats_redisCache_merge_keysWritten_total{prefix!~"com.netflix.*", instance=~"$Instance"}[$__rate_interval])) by (prefix), "platform", "$1", "prefix", "([^\\\\./]*).*")',
         legendFormat='{{platform}}',
       )
     )
@@ -566,7 +570,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(cats_redisCache_merge_keysWritten_total{prefix=~".*.$Platform.*", instance=~"$Instance"}[$__interval])) by (type)',
+        'sum(rate(cats_redisCache_merge_keysWritten_total{prefix=~".*.$Platform.*", instance=~"$Instance"}[$__rate_interval])) by (type)',
         legendFormat='{{type}}',
       )
     )
@@ -579,13 +583,13 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(cats_redisCache_merge_itemCount_total{prefix=~"com.netflix.*", instance=~"$Instance"}[$__interval])) by (prefix), "platform", "$1", "prefix", ".*.clouddriver.([^\\\\.]*).*")',
+        'label_replace(sum(rate(cats_redisCache_merge_itemCount_total{prefix=~"com.netflix.*", instance=~"$Instance"}[$__rate_interval])) by (prefix), "platform", "$1", "prefix", ".*.clouddriver.([^\\\\.]*).*")',
         legendFormat='{{platform}}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(cats_redisCache_merge_itemCount_total{prefix!~"com.netflix.*", instance=~"$Instance"}[$__interval])) by (prefix), "platform", "$1", "prefix", "([^\\\\./]*).*")',
+        'label_replace(sum(rate(cats_redisCache_merge_itemCount_total{prefix!~"com.netflix.*", instance=~"$Instance"}[$__rate_interval])) by (prefix), "platform", "$1", "prefix", "([^\\\\./]*).*")',
       )
     )
   )
@@ -597,13 +601,13 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(cats_redisCache_merge_itemCount_total{prefix=~".*.$Platform.*", instance=~"$Instance"}[$__interval])) by (type)',
+        'sum(rate(cats_redisCache_merge_itemCount_total{prefix=~".*.$Platform.*", instance=~"$Instance"}[$__rate_interval])) by (type)',
         legendFormat='{{type}}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(cats_redisCache_evict_itemCount_total{prefix=~"com.netflix.*", instance=~"$Instance"}[$__interval])) by (prefix), "platform", "$1", "prefix", ".*.clouddriver.([^\\\\.]*).*")',
+        'label_replace(sum(rate(cats_redisCache_evict_itemCount_total{prefix=~"com.netflix.*", instance=~"$Instance"}[$__rate_interval])) by (prefix), "platform", "$1", "prefix", ".*.clouddriver.([^\\\\.]*).*")',
         legendFormat='{{platform}}',
       )
     )
@@ -616,7 +620,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(cats_redisCache_evict_itemCount_total{prefix!~"com.netflix.*", instance=~"$Instance"}[$__interval])) by (prefix), "platform", "$1", "prefix", "([^\\\\./]*).*")',
+        'label_replace(sum(rate(cats_redisCache_evict_itemCount_total{prefix!~"com.netflix.*", instance=~"$Instance"}[$__rate_interval])) by (prefix), "platform", "$1", "prefix", "([^\\\\./]*).*")',
         legendFormat='{{platform}}',
       )
     )
@@ -629,7 +633,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(cats_redisCache_evict_keysDeleted_total{prefix=~".*.$Platform.*", instance=~"$Instance"}[$__interval])) by (type)',
+        'sum(rate(cats_redisCache_evict_keysDeleted_total{prefix=~".*.$Platform.*", instance=~"$Instance"}[$__rate_interval])) by (type)',
         legendFormat='{{type}}',
       )
     )
@@ -642,13 +646,13 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(cats_redisCache_evict_itemCount_total{prefix=~"com.netflix.*", instance=~"$Instance"}[$__interval])) by (prefix), "platform", "$1", "prefix", ".*.clouddriver.([^\\\\.]*).*")',
+        'label_replace(sum(rate(cats_redisCache_evict_itemCount_total{prefix=~"com.netflix.*", instance=~"$Instance"}[$__rate_interval])) by (prefix), "platform", "$1", "prefix", ".*.clouddriver.([^\\\\.]*).*")',
         legendFormat='{{platform}}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'label_replace(sum(rate(cats_redisCache_evict_itemCount_total{prefix!~"com.netflix.*", instance=~"$Instance"}[$__interval])) by (prefix), "platform", "$1", "prefix", "([^\\\\./]*).*")',
+        'label_replace(sum(rate(cats_redisCache_evict_itemCount_total{prefix!~"com.netflix.*", instance=~"$Instance"}[$__rate_interval])) by (prefix), "platform", "$1", "prefix", "([^\\\\./]*).*")',
         legendFormat='{{platform}}',
       )
     )
@@ -661,7 +665,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(cats_redisCache_evict_itemCount_total{prefix=~".*.$Platform.*", instance=~"$Instance"}[$__interval])) by (type)',
+        'sum(rate(cats_redisCache_evict_itemCount_total{prefix=~".*.$Platform.*", instance=~"$Instance"}[$__rate_interval])) by (type)',
         legendFormat='{{type}}',
       )
     )
@@ -687,13 +691,13 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(clouddriver:google:operationWaits__count_total{instance=~"$Instance",status!="DONE"}[$__interval])) by (basePhase, scope) ',
+        'sum(rate(clouddriver:google:operationWaits__count_total{instance=~"$Instance",status!="DONE"}[$__rate_interval])) by (basePhase, scope) ',
         legendFormat='{{scope}}/{{basePhase}}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(clouddriver:google:operationWaits__totalTime_total{instance=~"$Instance"}[$__interval])) by (basePhase, scope) / sum(rate(clouddriver:google:operationWaits__count_total{instance=~"$Instance"}[$__interval])) by (basePhase, scope) ',
+        'sum(rate(clouddriver:google:operationWaits__totalTime_total{instance=~"$Instance"}[$__rate_interval])) by (basePhase, scope) / sum(rate(clouddriver:google:operationWaits__count_total{instance=~"$Instance"}[$__rate_interval])) by (basePhase, scope) ',
         legendFormat='{{scope}}/{{basePhase}}',
       )
     )
@@ -730,7 +734,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(clouddriver:google:operationWaits__count_total{instance=~"$Instance",status="DONE"}[$__interval])) by (basePhase)',
+        'sum(rate(clouddriver:google:operationWaits__count_total{instance=~"$Instance",status="DONE"}[$__rate_interval])) by (basePhase)',
         legendFormat='{{basePhase}}',
       )
     )
@@ -749,7 +753,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'avg(rate(amazonClientProvider_rateLimitDelayMil[$__interval])) by (clientType)',
+        'avg(rate(amazonClientProvider_rateLimitDelayMil[$__rate_interval])) by (clientType)',
         legendFormat='{{clientType}}',
       )
     )
@@ -778,6 +782,7 @@ grafana.dashboard.new(
       title='JVM Memory Usage ($spinSvc, $Instance)',
       datasource='$datasource',
       span=3,
+      format='decbytes',
     )
     .addTarget(
       grafana.prometheus.target(
