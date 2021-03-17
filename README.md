@@ -4,9 +4,9 @@ The Spinnaker services can expose Prometheus metrics on
 `*:<service_port>/aop-prometheus` when using the [Armory Observability
 Plugin](https://github.com/armory-plugins/armory-observability-plugin).
 
-These metrics enable operators to observe how it is performing. For example 
+These metrics enable operators to observe how it is performing. For example
 how many pipelines have been triggered, any errors with cloud providers or REST
-calls between services. 
+calls between services.
 
 These metrics can be scraped by a Prometheus server and viewed in Prometheus,
 displayed on a Grafana dashboard and/or trigger alerts to Slack/etc.
@@ -20,7 +20,7 @@ tests.
 
 By creating a mixin, application maintainers and contributors to the project
 can enshrine knowledge about operating the application and potential SLO's
-that users may wish to use. 
+that users may wish to use.
 
 For more details about this concept see the [monitoring-mixins](https://github.com/monitoring-mixins/docs)
 project on GitHub.
@@ -55,14 +55,14 @@ The [Prometheus Operator](https://github.com/coreos/prometheus-operator)
 supports a couple of Kubernetes native scrape target `CustomResourceDefinitions`.
 
 This project includes a [PodMonitor](podmonitor.yaml) CRD definition that is
-defaults to scraping all `Pods` with annoation `prometheus.io/scrape= "true"` on 
-port `8008`. 
+defaults to scraping all `Pods` with annoation `prometheus.io/scrape= "true"` on
+port `8008`.
 
-The scrape port is different from the default because if we apply [Principle of least privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege) then Prometheus doesn't need and shouldn't 
+The scrape port is different from the default because if we apply [Principle of least privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege) then Prometheus doesn't need and shouldn't
 have access to the Spinnaker API's.
 
 If you would like to scrape each services default port then you can use the
-included `PodMonitor` as a base and duplicate per application, modifying the 
+included `PodMonitor` as a base and duplicate per application, modifying the
 the selectors pod labels and target port number each time.
 
 Submit the `PodMonitor` CustomResourceDefinition to Kubernetes API:
@@ -71,13 +71,13 @@ $ kubectl apply -f podmonitor.yaml
 ```
 
 The Prometheus Operator will trigger a reload of Prometheus configuration and
-you should see the Spinnaker services in your Prometheus UI under 
+you should see the Spinnaker services in your Prometheus UI under
 `Service Discovery` and `Targets`.
 
 ## Grafana dashboard
 
-The [dashboards](./dashboards/) can be imported standalone into Grafana. 
-You may need to edit the datasource if you have configured your Prometheus 
+The [dashboards](./dashboards/) can be imported standalone into Grafana.
+You may need to edit the datasource if you have configured your Prometheus
 datasource with a different name.
 
 ## Using the mixin with kube-prometheus
@@ -104,6 +104,39 @@ $ make
 ## Contributing
 
 Pull requests are most welcome.
+
+### Iterating with a local Grafana instance
+
+When modifying dashboards it can be useful to have a live Grafana
+instance with access to a Prometheus datasource with metric data.
+
+We can run a local Grafana with Docker and thanks to Grafana's
+[provisioning](https://grafana.com/docs/grafana/latest/administration/provisioning/#datasources?utm_source=grafana_ds_list) support we can have it watch for dashboard changes in
+`manifests/` and reload them.
+
+Start Grafana listening on `127.0.0.1:3000`:
+```
+make grafana
+```
+
+Expose your Prometheus on `0.0.0.0:9090` or via Kubernetes:
+```
+kubectl port-forward -n prometheus svc/prometheus-k8s --address 0.0.0.0 9090 &
+```
+
+Edit dashboards:
+```
+vim dashboards/clouddriver.jsonnet
+```
+
+Render jsonnet to json:
+```
+make
+```
+
+Check http://localhost:3000 for changes.
+
+### Alert Conventions
 
 Please see the
 [monitoring-mixins guidelines for alert names](https://github.com/monitoring-mixins/docs#guidelines-for-alert-names-labels-and-annotations) for conventions we attempt to follow.

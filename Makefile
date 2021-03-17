@@ -69,6 +69,25 @@ test: prometheus_alerts.yaml prometheus_rules.yaml ## Test generated files
 	$(PROMTOOL_CMD) check rules manifests/prometheus_alerts.yaml
 	$(PROMTOOL_CMD) test rules tests.yaml
 
+grafana: ## Start local Grafana and watch manifests for changes
+	docker stop grafana || true
+	docker run \
+		--name grafana \
+		--rm --detach=true \
+		--env GF_AUTH_ANONYMOUS_ENABLED="true" \
+		--env GF_AUTH_ANONYMOUS_ORG_ROLE="Admin" \
+		--env GF_AUTH_DISABLE_LOGIN_FORM="true" \
+		--env GF_PATHS_PROVISIONING=/etc/grafana/conf/provisioning \
+		--volume "$${PWD}/grafana-datasources.yaml:/etc/grafana/conf/provisioning/datasources/default.yaml" \
+		--volume "$${PWD}/grafana-dashboards.yaml:/etc/grafana/conf/provisioning/dashboards/default.yaml" \
+		--volume "$${PWD}/manifests/:/var/lib/grafana/dashboards" \
+		--publish 3000:3000 \
+		grafana/grafana
+	@echo -e "\nPort Forward from Kubernetes with something like: \n
+		kubectl port-forward --namespace prometheus svc/prometheus-k8s --address 0.0.0.0 9090 &"
+	@echo -e "\nStop Grafana with:\n\ndocker stop grafana"
+
+
 .PHONY: help
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
