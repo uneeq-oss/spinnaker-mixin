@@ -2,6 +2,7 @@
 stages:
 - build
 - test
+- release
 
 render:
   stage: build
@@ -10,8 +11,8 @@ render:
     name: "$CI_JOB_NAME"
     paths:
     - manifests
-  only:
-  - merge_requests
+  rules:
+  - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
   variables:
     JSONNET_VERSION: "0.16.0"
   script:
@@ -30,9 +31,25 @@ prometheus-test:
   - render
   needs:
   - render
-  only:
-  - merge_requests
+  rules:
+  - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
   script:
   - promtool check rules manifests/prometheus_rules.yaml
   - promtool check rules manifests/prometheus_alerts.yaml
   - promtool test rules tests.yaml
+
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  needs:
+  - render
+  rules:
+  - if: $CI_COMMIT_TAG   # Run this job when a tag is created manually
+  script:
+  - tar -czvf spinnaker-mixin.tar.gz manifests podmonitor.yaml
+  - echo $CI_COMMIT_TAG
+  - |
+    curl \
+      --header "JOB-TOKEN: $CI_JOB_TOKEN" \
+      --upload-file spinnaker-mixin.tar.gz \
+      "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/spinnaker-mixin/${CI_COMMIT_TAG}/spinnaker-mixin.tar.gz"
