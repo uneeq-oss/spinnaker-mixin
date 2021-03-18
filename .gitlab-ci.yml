@@ -2,6 +2,7 @@
 stages:
 - build
 - test
+- upload
 - release
 
 render:
@@ -11,8 +12,6 @@ render:
     name: "$CI_JOB_NAME"
     paths:
     - manifests
-  rules:
-  - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
   variables:
     JSONNET_VERSION: "0.16.0"
   script:
@@ -31,20 +30,18 @@ prometheus-test:
   - render
   needs:
   - render
-  rules:
-  - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
   script:
   - promtool check rules manifests/prometheus_rules.yaml
   - promtool check rules manifests/prometheus_alerts.yaml
   - promtool test rules tests.yaml
 
-release:
-  stage: release
-  image: registry.gitlab.com/gitlab-org/release-cli:latest
+upload:
+  stage: upload
+  image: curlimages/curl:latest
   needs:
   - render
   rules:
-  - if: $CI_COMMIT_TAG   # Run this job when a tag is created manually
+  - if: $CI_COMMIT_TAG  # Run this job when a tag is created manually
   script:
   - tar -czvf spinnaker-mixin.tar.gz manifests podmonitor.yaml
   - echo $CI_COMMIT_TAG
@@ -53,3 +50,15 @@ release:
       --header "JOB-TOKEN: $CI_JOB_TOKEN" \
       --upload-file spinnaker-mixin.tar.gz \
       "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/spinnaker-mixin/${CI_COMMIT_TAG}/spinnaker-mixin.tar.gz"
+
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+  - if: $CI_COMMIT_TAG  # Run this job when a tag is created manually
+  script:
+  - |
+    release-cli \
+      create --name "Release $CI_COMMIT_TAG" \
+      --tag-name $CI_COMMIT_TAG \
+      --assets-link "{\"name\":\"spinnaker-mixin.tar.gz\",\"url\":\"${PACKAGE_REGISTRY_URL}/${CI_COMMIT_TAG}/spinnaker-mixin.tar.gz\"}"
