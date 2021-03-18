@@ -1,28 +1,19 @@
 ---
-# Define stages to run in pipeline
 stages:
-- lint
+- build
 - test
+- upload
+- release
 
-dummy-stage:
-  only:
-  - merge_requests
-  stage: lint
-  script:
-  - echo "Changed file list:"
-  - git diff --name-only $(git log -n 1 origin/master --pretty=%H)...${CI_COMMIT_SHA}
-
-jsonnet:
+render:
+  stage: build
   image: golang
   artifacts:
     name: "$CI_JOB_NAME"
     paths:
     - manifests
-  only:
-  - merge_requests
   variables:
     JSONNET_VERSION: "0.16.0"
-  stage: lint
   script:
   - go mod init dummymod
   - go get github.com/google/go-jsonnet/cmd/jsonnet@v${JSONNET_VERSION}
@@ -31,17 +22,47 @@ jsonnet:
   - make dashboards_out prometheus_alerts.yaml prometheus_rules.yaml
 
 prometheus-test:
+  stage: test
   image:
     name: prom/prometheus:latest
     entrypoint: [""]
   dependencies:
-  - jsonnet
+  - render
   needs:
-  - jsonnet
-  only:
-  - merge_requests
-  stage: test
+  - render
   script:
   - promtool check rules manifests/prometheus_rules.yaml
   - promtool check rules manifests/prometheus_alerts.yaml
   - promtool test rules tests.yaml
+
+upload:
+  stage: upload
+  image: curlimages/curl:latest
+  needs:
+  - render
+  rules:
+  - if: $CI_COMMIT_TAG  # Run this job when a tag is created manually
+  variables:
+    PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/spinnaker-mixin/${CI_COMMIT_TAG}"
+  script:
+  - tar -czvf spinnaker-mixin.tar.gz manifests podmonitor.yaml
+  - echo $CI_COMMIT_TAG
+  - |
+    curl \
+      --header "JOB-TOKEN: $CI_JOB_TOKEN" \
+      --upload-file spinnaker-mixin.tar.gz \
+      "${PACKAGE_REGISTRY_URL}/spinnaker-mixin-rendered.tar-v${CI_COMMIT_TAG}.gz"
+
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  rules:
+  - if: $CI_COMMIT_TAG  # Run this job when a tag is created manually
+  variables:
+    PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/spinnaker-mixin/${CI_COMMIT_TAG}"
+  script:
+  - |
+    release-cli \
+      create --name "Release $CI_COMMIT_TAG" \
+      --tag-name $CI_COMMIT_TAG \
+      --assets-link "{\"name\":\"spinnaker-mixin-rendered-v${CI_COMMIT_TAG}.tar.gz\",\"url\":\"${PACKAGE_REGISTRY_URL}/spinnaker-mixin-rendered-v${CI_COMMIT_TAG}.tar.gz\"}"
