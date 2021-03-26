@@ -7,7 +7,7 @@ grafana.dashboard.new(
   refresh='1m',
   time_from='now-1h',
   tags=['spinnaker'],
-  uid='deck',
+  uid='spinnaker-deck',
 )
 
 // Links
