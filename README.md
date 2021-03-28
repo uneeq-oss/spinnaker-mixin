@@ -74,9 +74,19 @@ The Prometheus Operator will trigger a reload of Prometheus configuration and
 you should see the Spinnaker services in your Prometheus UI under
 `Service Discovery` and `Targets`.
 
-## Grafana dashboard
+## Grafana dashboards
 
-The [dashboards](./dashboards/) can be imported standalone into Grafana.
+Whilst Grafana dashboards are json files this project uses
+[jsonnet](https://jsonnet.org/) templating language to simplify development and
+maintenance of the dashboards.
+
+The [dashboards](./dashboards/) directory contains the jsonnet template files
+which must be rendered into json in order to be imported into Grafana.
+
+You can install and use the `jsonnet` tool to render the dashboards or download
+the latest [release](https://gitlab.com/uneeq-oss/spinnaker-mixin/-/releases)
+archive which contains rendered json files ready for importing into Grafana.
+
 You may need to edit the datasource if you have configured your Prometheus
 datasource with a different name.
 
@@ -85,18 +95,19 @@ datasource with a different name.
 See the [kube-prometheus](https://github.com/coreos/kube-prometheus#kube-prometheus)
 project documentation for instructions on importing mixins.
 
-## Using the mixin as raw YAML files
+## Using the mixin as raw JSON and YAML files
 
 If you don't use the jsonnet based `kube-prometheus` project then you will need to
-generate the raw yaml files for inclusion in your Prometheus installation.
+generate the raw files or download the latest [release](https://gitlab.com/uneeq-oss/spinnaker-mixin/-/releases)
+archive for inclusion in your Prometheus installation.
 
-Install the `jsonnet` dependencies:
+To generate the raw files first install the `jsonnet` dependencies:
 ```
 $ go get github.com/google/go-jsonnet/cmd/jsonnet
 $ go get github.com/google/go-jsonnet/cmd/jsonnetfmt
 ```
 
-Generate yaml:
+Generate with:
 ```
 $ make
 ```
@@ -111,7 +122,8 @@ When modifying dashboards it can be useful to have a live Grafana
 instance with access to a Prometheus datasource with metric data.
 
 We can run a local Grafana with Docker and thanks to Grafana's
-[provisioning](https://grafana.com/docs/grafana/latest/administration/provisioning/#datasources?utm_source=grafana_ds_list) support we can have it watch for dashboard changes in
+[provisioning](https://grafana.com/docs/grafana/latest/administration/provisioning/#datasources?utm_source=grafana_ds_list)
+support we can have it watch for dashboard changes in
 `manifests/` and reload them.
 
 Start Grafana listening on `127.0.0.1:3000`:
@@ -139,7 +151,8 @@ Check http://localhost:3000 for changes.
 ### Alert Conventions
 
 Please see the
-[monitoring-mixins guidelines for alert names](https://github.com/monitoring-mixins/docs#guidelines-for-alert-names-labels-and-annotations) for conventions we attempt to follow.
+[monitoring-mixins guidelines for alert names](https://github.com/monitoring-mixins/docs#guidelines-for-alert-names-labels-and-annotations)
+for conventions we attempt to follow.
 
 New alerts should generally be accompanied by a relevant unit test in
 [tests.yaml](./tests.yaml). Tests help readers understand the alerts purpose and

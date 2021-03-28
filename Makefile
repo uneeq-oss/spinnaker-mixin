@@ -9,7 +9,7 @@
 # Use commonly available shell
 SHELL := bash
 # Fail if piped commands fail - critical for CI/etc
-.SHELLFLAGS := -eu -o pipefail -c
+.SHELLFLAGS := -o errexit -o nounset -o pipefail -c
 # Use one shell for a target, rather than shell per line
 .ONESHELL:
 
@@ -41,7 +41,10 @@ fmt: ## Format Jsonnet
 
 dashboards_out: mixin.libsonnet lib/dashboards.jsonnet dashboards/*.libsonnet ## Generate Dashboards JSON
 	@mkdir -p manifests
-	$(JSONNET_CMD) -m manifests lib/dashboards.jsonnet
+	$(JSONNET_CMD) \
+		-J vendor/ \
+		-m manifests \
+		lib/dashboards.jsonnet
 
 lint-jsonnet:
 	$(JSONNET_FMT_CMD) --version
