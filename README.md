@@ -67,7 +67,7 @@ the selectors pod labels and target port number each time.
 
 Submit the `PodMonitor` CustomResourceDefinition to Kubernetes API:
 ```
-$ kubectl apply -f podmonitor.yaml
+kubectl apply -f podmonitor.yaml
 ```
 
 The Prometheus Operator will trigger a reload of Prometheus configuration and
@@ -103,13 +103,14 @@ archive for inclusion in your Prometheus installation.
 
 To generate the raw files first install the `jsonnet` dependencies:
 ```
-$ go get github.com/google/go-jsonnet/cmd/jsonnet
-$ go get github.com/google/go-jsonnet/cmd/jsonnetfmt
+go get github.com/google/go-jsonnet/cmd/jsonnet
+go get github.com/google/go-jsonnet/cmd/jsonnetfmt
+jb install
 ```
 
 Generate with:
 ```
-$ make
+make
 ```
 
 ## Contributing
@@ -141,9 +142,16 @@ Edit dashboards:
 vim dashboards/clouddriver.jsonnet
 ```
 
+Install the `jsonnet` dependencies:
+```
+go get github.com/google/go-jsonnet/cmd/jsonnet
+go get github.com/google/go-jsonnet/cmd/jsonnetfmt
+jb install
+```
+
 Render jsonnet to json:
 ```
-make
+make dashboards_out
 ```
 
 Check http://localhost:3000 for changes.
