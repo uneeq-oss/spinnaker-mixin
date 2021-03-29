@@ -73,7 +73,89 @@ grafana.dashboard.new(
     grafana.text.new(
       title='Service Description',
       content="Rosco is Spinnaker's bakery, producing machine images with Hashicorp Packer and rendered manifests with templating engines Helm and Kustomize.",
+      span=6,
+    )
+  )
+  .addPanel(
+    grafana.graphPanel.new(
+      title='Active Bakes (rosco, $Instance)',
+      datasource='$datasource',
       span=3,
+    )
+    .addTarget(
+      grafana.prometheus.target(
+        'sum(bakesActive{instance=~"$Instance"}) by (instance)',
+        legendFormat='Active/{{instance}}',
+      )
+    )
+  )
+  .addPanel(
+    grafana.graphPanel.new(
+      title='Bake Request Rate (rosco, $Instance)',
+      datasource='$datasource',
+      span=3,
+    )
+    .addTarget(
+      grafana.prometheus.target(
+        'sum(rate(bakesRequested_total{instance=~"$Instance"}[$__rate_interval])) by (flavor)',
+        legendFormat='{{flavor}}',
+      )
+    )
+  )
+  .addPanel(
+    grafana.graphPanel.new(
+      title='Bake Failure Rate (rosco, $Instance)',
+      datasource='$datasource',
+      span=3,
+    )
+    .addTarget(
+      grafana.prometheus.target(
+        'sum(rate(bakesCompleted_seconds_count{instance=~"$Instance",success="false"}[$__rate_interval])) by (cause, region)',
+        legendFormat='{{cause}}/{{region}}',
+      )
+    )
+  )
+  .addPanel(
+    grafana.graphPanel.new(
+      title='Bake Succees Rate (rosco, $Instance)',
+      datasource='$datasource',
+      span=3,
+    )
+    .addTarget(
+      grafana.prometheus.target(
+        'sum(rate(bakesCompleted_seconds_count{instance=~"$Instance",success="true"}[$__rate_interval])) by (region)',
+        legendFormat='/{{region}}',
+      )
+    )
+  )
+  .addPanel(
+    grafana.graphPanel.new(
+      title='Bake Failure Duration (rosco, $Instance)',
+      datasource='$datasource',
+      span=3,
+      format='dtdurations',
+      nullPointMode='null as zero',
+    )
+    .addTarget(
+      grafana.prometheus.target(
+        'sum(rate(bakesCompleted_seconds_sum{instance=~"$Instance",success="false"}[$__rate_interval])) by (cause,region)\n/\nsum(rate(bakesCompleted_seconds_count{instance=~"$Instance",success="false"}[$__rate_interval])) by (cause,region)',
+        legendFormat='{{cause}}/{{region}}',
+      )
+    )
+  )
+  .addPanel(
+    grafana.graphPanel.new(
+      title='Bake Success Duration (rosco, $Instance)',
+      datasource='$datasource',
+      span=3,
+      format='dtdurations',
+      nullPointMode='null as zero',
+    )
+    .addTarget(
+      grafana.prometheus.target(
+        'sum(rate(bakesCompleted_seconds_sum{instance=~"$Instance",success="true"}[$__rate_interval])) by (region)\n/\nsum(rate(bakesCompleted_seconds_count{instance=~"$Instance",success="true"}[$__rate_interval])) by (region)',
+        legendFormat='{{region}}',
+      )
     )
   )
 )
@@ -119,44 +201,6 @@ grafana.dashboard.new(
       grafana.prometheus.target(
         'sum(rate(controller_invocations_seconds_sum{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (controller, method)\n/\nsum(rate(controller_invocations_seconds_count{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (controller, method)',
         legendFormat='{{controller}}/{{method}}',
-      )
-    )
-  )
-  .addPanel(
-    grafana.graphPanel.new(
-      title='Bakes Completed (rosco, $Instance)',
-      datasource='$datasource',
-      span=3,
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(rate(bakesCompleted_seconds_sum{instance=~"$Instance"}[$__rate_interval])) by (region)\n/\nsum(rate(bakesCompleted_seconds_count{instance=~"$Instance"}[$__rate_interval])) by (region)',
-        legendFormat='{{region}}',
-      )
-    )
-  )
-  .addPanel(
-    grafana.graphPanel.new(
-      title='Bake Requests and Failures  (rosco, $Instance)',
-      datasource='$datasource',
-      span=3,
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(bakesActive{instance=~"$Instance"}) by (instance)',
-        legendFormat='Active/{{instance}}',
-      )
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(rate(bakesRequested{instance=~"$Instance"}[$__rate_interval])) by (flavor)',
-        legendFormat='Request/{{flavor}}',
-      )
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        '-1 * sum(rate(bakesCompleted{instance=~"$Instance",success="false"}[$__rate_interval])) by (region)',
-        legendFormat='Failed/{{region}}',
       )
     )
   )
