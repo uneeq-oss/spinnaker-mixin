@@ -120,7 +120,7 @@ grafana.row.new(
     datasource='$datasource',
     span=3,
     nullPointMode='connected',
-    format='binBps',
+    format='Bps',
   )
   .addSeriesOverride({
     alias: 'transmit',
