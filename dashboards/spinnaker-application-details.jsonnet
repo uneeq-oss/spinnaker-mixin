@@ -22,7 +22,7 @@ grafana.dashboard.new(
   grafana.template.new(
     name='Application',
     datasource='$datasource',
-    query='label_values(stage_invocations_total{spinSvc="orca"}, application)',
+    query='label_values(stage_invocations_total{spinSvc=".*orca.*"}, application)',
     allValues='.*',
     current='All',
     refresh=2,
@@ -42,7 +42,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(stage_invocations_total{spinSvc="$spinSvc", application=~"$Application"}[$__rate_interval])) by (application, type)',
+        'sum(rate(stage_invocations_total{spinSvc=~".*orca.*", application=~"$Application"}[$__rate_interval])) by (application, type)',
         legendFormat='{{application}}/{{type}}',
       )
     )
@@ -50,49 +50,34 @@ grafana.dashboard.new(
 
   .addPanel(
     grafana.graphPanel.new(
-      title='Pushed Messages by Application (orca, $Application)',
+      title='$Application Pipelines Triggered (echo, $Application)',
       datasource='$datasource',
       span=3,
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(queue_pushed_messages_total{spinSvc="$spinSvc", application=~"$Application"}[$__rate_interval])) by (application)',
+        'sum(rate(pipelines_triggered_total{spinSvc=~".*echo.*", application=~"$Application"}[$__rate_interval])) by (application)',
         legendFormat='{{application}}',
       )
     )
   )
 
-
   .addPanel(
     grafana.graphPanel.new(
-      title='$Application Pipelines Triggered (echo)',
+      title='Bakes Active and Requested (rosco)',
       datasource='$datasource',
       span=3,
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(pipelines_triggered_total{spinSvc=~"echo", application=~"$Application"}[$__rate_interval])) by (name, application)',
-        legendFormat='{{name}}({{application}})',
-      )
-    )
-  )
-
-  .addPanel(
-    grafana.graphPanel.new(
-      title='Bake Requests and Failures (rosco)',
-      datasource='$datasource',
-      span=3,
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(bakesActive)',
+        'sum(bakesActive{spinSvc=~".*rosco.*"})',
         legendFormat='Active',
       )
     )
 
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(bakesRequested_total[$__rate_interval])) by (flavor)',
+        'sum(rate(bakesRequested_total{spinSvc=~".*rosco.*"}[$__rate_interval])) by (flavor)',
         legendFormat='Request({{flavor}})',
       )
     )
@@ -100,24 +85,31 @@ grafana.dashboard.new(
 
   .addPanel(
     grafana.graphPanel.new(
-      title='Bakes Completed (rosco)',
+      title='Bake Failure Rate (rosco)',
+      datasource='$datasource',
+      span=3,
+      min=0,
+    )
+    .addTarget(
+      grafana.prometheus.target(
+        'sum(rate(bakesCompleted_seconds_count{spinSvc=~".*rosco.*",success="false"}[$__rate_interval])) by (cause, region)',
+        legendFormat='{{cause}}/{{region}}',
+      )
+    )
+  )
+  .addPanel(
+    grafana.graphPanel.new(
+      title='Bake Succees Rate (rosco)',
       datasource='$datasource',
       span=3,
     )
     .addTarget(
       grafana.prometheus.target(
-        '-1 * sum(rate(bakesCompleted_seconds_count{success="false"}[$__rate_interval])) by (region)',
-        legendFormat='Failed {{region}}',
-      )
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(rate(bakesCompleted_seconds_sum[$__rate_interval]) / 1000000000) by (region)\n/\nsum(rate(bakesCompleted_seconds_count[$__rate_interval])) by (region)',
+        'sum(rate(bakesCompleted_seconds_count{spinSvc=~".*rosco.*",success="true"}[$__rate_interval])) by (region)',
         legendFormat='{{region}}',
       )
     )
   )
-
 
   .addPanel(
     grafana.graphPanel.new(
