@@ -25,7 +25,6 @@ grafana.dashboard.new(
     grafana.graphPanel.new(
       title='Resilience4J Open',
       datasource='$datasource',
-      span=3,
     )
     .addTarget(
       grafana.prometheus.target(
@@ -38,7 +37,6 @@ grafana.dashboard.new(
     grafana.graphPanel.new(
       title='Resilience4J Half-Open',
       datasource='$datasource',
-      span=3,
     )
     .addTarget(
       grafana.prometheus.target(
@@ -51,7 +49,6 @@ grafana.dashboard.new(
     grafana.graphPanel.new(
       title='5xx Invocation Errors',
       datasource='$datasource',
-      span=3,
     )
     .addTarget(
       grafana.prometheus.target(
@@ -106,12 +103,11 @@ grafana.dashboard.new(
     grafana.graphPanel.new(
       title='Active Stages per Type/Platform (orca)',
       datasource='$datasource',
-      span=3,
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(stage_invocations_total[$__rate_interval])) by (instance, type, cloudProvider)',
-        legendFormat='{{type}}/{{cloudProvider}}/{{instance}}',
+        'sum(rate(stage_invocations_total[$__rate_interval])) by (type, cloudProvider)',
+        legendFormat='{{type}}/{{cloudProvider}}',
       )
     )
   )
@@ -119,7 +115,6 @@ grafana.dashboard.new(
     grafana.graphPanel.new(
       title='Completed Stages per Type/Platform (orca)',
       datasource='$datasource',
-      span=3,
     )
     .addTarget(
       grafana.prometheus.target(
@@ -130,22 +125,36 @@ grafana.dashboard.new(
   )
   .addPanel(
     grafana.graphPanel.new(
-      title='Stage Duration > 5m per Time-Bucket/Platform (orca)',
+      title='Stage Duration (log2) per Platform (orca)',
+      description='Not all AWS stages have "cloudProvider" label. Override missing options to "aws(override)"',
       datasource='$datasource',
-      span=3,
+      format='dtdurations',
+      logBase1Y='2',
+      nullPointMode='null as zero',
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(stage_invocations_duration_total{bucket!="lt5m"}[$__rate_interval])) by (cloudProvider, percentile)',
-        legendFormat='{{percentile}}/{{cloudProvider}}',
+        'sum(rate(stage_invocations_duration_seconds_sum[$__rate_interval])) by (cloudProvider)\n/\nsum(rate(stage_invocations_duration_seconds_count[$__rate_interval])) by (cloudProvider)',
+        legendFormat='{{cloudProvider}}',
       )
+    )
+    .addOverride(
+      matcher={
+        id: 'byRegexp',
+        options: 'Value',
+      },
+      properties=[
+        {
+          id: 'displayName',
+          value: 'aws(override)',
+        },
+      ],
     )
   )
   .addPanel(
     grafana.graphPanel.new(
       title='Pipelines Triggered (echo)',
       datasource='$datasource',
-      span=3,
     )
     .addTarget(
       grafana.prometheus.target(
@@ -156,26 +165,37 @@ grafana.dashboard.new(
   )
   .addPanel(
     grafana.graphPanel.new(
-      title='Bake Activity (rosco)',
+      title='Active Bakes (rosco)',
       datasource='$datasource',
-      span=3,
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(bakesActive)',
+        'bakesActive',
         legendFormat='Active',
       )
+    )
+  )
+  .addPanel(
+    grafana.graphPanel.new(
+      title='Bake Request and Completion Rates (rosco)',
+      datasource='$datasource',
     )
     .addTarget(
       grafana.prometheus.target(
         'sum(rate(bakesRequested_total[$__rate_interval])) by (flavor)',
-        legendFormat='Request({{flavor}})',
+        legendFormat='Requested/{{flavor}}',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        '-1 * sum(rate(bakesCompleted{success="false"}[$__rate_interval])) by (region)',
-        legendFormat='Failed {{region}}',
+        'sum(rate(bakesCompleted_seconds_count{success="false"}[$__rate_interval])) by (region)',
+        legendFormat='Failure/{{region}}',
+      )
+    )
+    .addTarget(
+      grafana.prometheus.target(
+        'sum(rate(bakesCompleted_seconds_count{success="true"}[$__rate_interval])) by (region)',
+        legendFormat='Success/{{region}}',
       )
     )
   )
@@ -183,7 +203,6 @@ grafana.dashboard.new(
     grafana.graphPanel.new(
       title='Item Cache Size (front50)',
       datasource='$datasource',
-      span=3,
     )
     .addTarget(
       grafana.prometheus.target(
@@ -196,7 +215,6 @@ grafana.dashboard.new(
     grafana.graphPanel.new(
       title='Execution Count (clouddriver)',
       datasource='$datasource',
-      span=3,
     )
     .addTarget(
       grafana.prometheus.target(
@@ -209,7 +227,6 @@ grafana.dashboard.new(
     grafana.graphPanel.new(
       title='Execution Latency (clouddriver)',
       datasource='$datasource',
-      span=3,
       format='dtdurations',
     )
     .addTarget(
