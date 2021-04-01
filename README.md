@@ -19,10 +19,10 @@ Typically this includes dashboards, recording rules, alerts and alert logic
 tests.
 
 By creating a mixin, application maintainers and contributors to the project
-can enshrine knowledge about operating the application and potential SLO's
-that users may wish to use.
+can enshrine knowledge about operating the application and supply Service
+Level Objectives that users may wish to use.
 
-For more details about this concept see the [monitoring-mixins](https://github.com/monitoring-mixins/docs)
+For more background see the [monitoring-mixins](https://github.com/monitoring-mixins/docs)
 project on GitHub.
 
 ## Scraping the metrics manually
@@ -54,12 +54,14 @@ stage_invocations_duration_seconds_max{cloudProvider="kubernetes",hostname="orca
 The [Prometheus Operator](https://github.com/coreos/prometheus-operator)
 supports a couple of Kubernetes native scrape target `CustomResourceDefinitions`.
 
-This project includes a [PodMonitor](podmonitor.yaml) CRD definition that is
-defaults to scraping all `Pods` with annoation `prometheus.io/scrape= "true"` on
+This project includes a [PodMonitor](podmonitor.yaml) CRD definition that by
+default will scrape all `Pods` with the annotation `prometheus.io/scrape= "true"` on
 port `8008`.
 
-The scrape port is different from the default because if we apply [Principle of least privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege) then Prometheus doesn't need and shouldn't
-have access to the Spinnaker API's.
+The scrape port is different from the plugins default (Service API port)
+because if we apply the [Principle of least privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege)
+then Prometheus shouldn't have access to the Spinnaker API's. It doesn't need
+it. See the plugin docs for changing the port to `8008` or something else.
 
 If you would like to scrape each services default port then you can use the
 included `PodMonitor` as a base and duplicate per application, modifying the
@@ -76,7 +78,7 @@ you should see the Spinnaker services in your Prometheus UI under
 
 ## Grafana dashboards
 
-Whilst Grafana dashboards are json files this project uses
+Whilst Grafana dashboards are `json` files this project uses
 [jsonnet](https://jsonnet.org/) templating language to simplify development and
 maintenance of the dashboards.
 
@@ -112,6 +114,8 @@ Generate with:
 ```
 make
 ```
+
+Grab the raw files from the `./manifests` directory.
 
 ## Contributing
 
@@ -159,8 +163,8 @@ Check http://localhost:3000 for changes.
 ### Alert Conventions
 
 Please see the
-[monitoring-mixins guidelines for alert names](https://github.com/monitoring-mixins/docs#guidelines-for-alert-names-labels-and-annotations)
-for conventions we attempt to follow.
+[monitoring-mixins alert guidelines](https://github.com/monitoring-mixins/docs#guidelines-for-alert-names-labels-and-annotations)
+for conventions we follow.
 
 New alerts should generally be accompanied by a relevant unit test in
 [tests.yaml](./tests.yaml). Tests help readers understand the alerts purpose and
