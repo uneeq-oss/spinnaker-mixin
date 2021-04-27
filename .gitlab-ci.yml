@@ -46,15 +46,15 @@ upload:
   rules:
   - if: $CI_COMMIT_TAG  # Run this job when a tag is created manually
   variables:
-    PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/spinnaker-mixin/${CI_COMMIT_TAG}"
+    PACKAGE_REGISTRY_BASE_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/spinnaker-mixin/${CI_COMMIT_TAG}"
   script:
   - tar -czvf spinnaker-mixin.tar.gz manifests podmonitor.yaml
-  - echo $CI_COMMIT_TAG
+  - echo "$CI_COMMIT_TAG"
   - |
     curl \
       --header "JOB-TOKEN: $CI_JOB_TOKEN" \
       --upload-file spinnaker-mixin.tar.gz \
-      "${PACKAGE_REGISTRY_URL}/spinnaker-mixin-rendered.tar-v${CI_COMMIT_TAG}.gz"
+      "${PACKAGE_REGISTRY_BASE_URL}/spinnaker-mixin-rendered.tar-v${CI_COMMIT_TAG}.gz"
 
 release:
   stage: release
@@ -62,10 +62,10 @@ release:
   rules:
   - if: $CI_COMMIT_TAG  # Run this job when a tag is created manually
   variables:
-    PACKAGE_REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/spinnaker-mixin/${CI_COMMIT_TAG}"
+    RELEASE_ASSET_BASE_URL: "https://gitlab.com/uneeq-oss/spinnaker-mixin/-/archive/${CI_COMMIT_TAG}"
   script:
   - |
     release-cli \
       create --name "Release $CI_COMMIT_TAG" \
-      --tag-name $CI_COMMIT_TAG \
-      --assets-link "{\"name\":\"spinnaker-mixin-rendered-v${CI_COMMIT_TAG}.tar.gz\",\"url\":\"${PACKAGE_REGISTRY_URL}/spinnaker-mixin-rendered-v${CI_COMMIT_TAG}.tar.gz\"}"
+      --tag-name "$CI_COMMIT_TAG" \
+      --assets-link "{\"name\":\"spinnaker-mixin-rendered-v${CI_COMMIT_TAG}.tar.gz\",\"url\":\"${RELEASE_ASSET_BASE_URL}/spinnaker-mixin-rendered-v${CI_COMMIT_TAG}.tar.gz\"}"
