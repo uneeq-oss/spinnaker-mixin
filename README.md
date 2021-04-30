@@ -155,7 +155,7 @@ jb install
 
 Render jsonnet to json:
 ```
-make dashboards_out
+make build
 ```
 
 Check http://localhost:3000 for changes.
