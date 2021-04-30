@@ -119,7 +119,9 @@ Grab the raw files from the `./manifests` directory.
 
 ## Contributing
 
-Pull requests are most welcome.
+Pull/Merge requests are most welcome.
+
+Come join us in the `#monitoring` on the official [Spinnaker Slack](http://join.spinnaker.io/).
 
 ### Iterating with a local Grafana instance
 
