@@ -5,7 +5,6 @@
 # Without docker (in CI) -> make SKIP_DOCKER=true
 
 # Make defaults
-# https://tech.davis-hansson.com/p/make/
 # Use commonly available shell
 SHELL := bash
 # Fail if piped commands fail - critical for CI/etc
@@ -22,15 +21,15 @@ ifneq ($(SKIP_DOCKER),true)
     PROMTOOL_CMD := docker pull ${PROMETHEUS_DOCKER_IMAGE} && \
 		docker run \
 			--user root \
-			-v $(PWD):/tmp \
-			-w /tmp \
+			--volume $(PWD):/tmp \
+			--workdir /tmp \
 			--entrypoint promtool \
 			$(PROMETHEUS_DOCKER_IMAGE)
 else
 	PROMTOOL_CMD := promtool
 endif
 
-all: fmt prometheus_alerts.yaml prometheus_rules.yaml dashboards_out lint-jsonnet test ## Generate files, lint and test
+all: fmt build test ## Format, build and test
 
 clean: ## Clean up generated files
 	rm -rf manifests/
@@ -39,14 +38,21 @@ fmt: ## Format Jsonnet
 	find . -name '*.libsonnet' -print -o -name '*.jsonnet' -print | \
 		xargs -n 1 -- $(JSONNET_FMT_CMD) -i
 
-dashboards_out: mixin.libsonnet lib/dashboards.jsonnet dashboards/*.libsonnet ## Generate Dashboards JSON
+dep: ## Install dependencies
+	if [[ ! -d vendor/ ]]; then
+		jb install
+	fi
+
+build: dep ## Build dashboards and Prometheus files
 	@mkdir -p manifests
 	$(JSONNET_CMD) \
 		-J vendor/ \
 		-m manifests \
 		lib/dashboards.jsonnet
+	$(JSONNET_CMD) -S lib/alerts.jsonnet > manifests/prometheus_alerts.yaml
+	$(JSONNET_CMD) -S lib/rules.jsonnet > manifests/prometheus_rules.yaml
 
-lint-jsonnet:
+test: build ## Test generated files
 	$(JSONNET_FMT_CMD) --version
 	export failed=0
 	export fs='$(shell find . -name '*.jsonnet' -o -name '*.libsonnet')'
@@ -59,15 +65,6 @@ lint-jsonnet:
 		exit 1
 	fi
 
-prometheus_alerts.yaml: mixin.libsonnet lib/alerts.jsonnet alerts/*.libsonnet ## Generate Alerts YAML
-	@mkdir -p manifests
-	$(JSONNET_CMD) -S lib/alerts.jsonnet > manifests/$@
-
-prometheus_rules.yaml: mixin.libsonnet lib/rules.jsonnet rules/*.libsonnet ## Generate Rules YAML
-	@mkdir -p manifests
-	$(JSONNET_CMD) -S lib/rules.jsonnet > manifests/$@
-
-test: prometheus_alerts.yaml prometheus_rules.yaml ## Test generated files
 	$(PROMTOOL_CMD) check rules manifests/prometheus_rules.yaml
 	$(PROMTOOL_CMD) check rules manifests/prometheus_alerts.yaml
 	$(PROMTOOL_CMD) test rules tests.yaml
@@ -76,7 +73,8 @@ grafana: ## Start local Grafana and watch manifests for changes
 	docker stop grafana || true
 	docker run \
 		--name grafana \
-		--rm --detach=true \
+		--detach=true \
+		--rm \
 		--env GF_AUTH_ANONYMOUS_ENABLED="true" \
 		--env GF_AUTH_ANONYMOUS_ORG_ROLE="Admin" \
 		--env GF_AUTH_DISABLE_LOGIN_FORM="true" \

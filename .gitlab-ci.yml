@@ -21,8 +21,7 @@ render:
   - go get github.com/google/go-jsonnet/cmd/jsonnet@v${JSONNET_VERSION}
   - go get github.com/google/go-jsonnet/cmd/jsonnetfmt@v${JSONNET_VERSION}
   - jb install
-  - make lint-jsonnet
-  - make dashboards_out prometheus_alerts.yaml prometheus_rules.yaml
+  - make build
 
 prometheus-test:
   stage: test
