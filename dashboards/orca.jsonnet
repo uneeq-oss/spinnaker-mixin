@@ -91,7 +91,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum by (executionType) (\n  executions_active{container="orca"}\n)',
+        'max by (executionType) (\n  executions_active{container="orca"}\n)',
         legendFormat='{{ executionType }}'
       )
     )
