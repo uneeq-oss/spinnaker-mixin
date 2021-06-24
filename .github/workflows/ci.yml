@@ -2,34 +2,29 @@ name: Build and Test
 
 on:
   push:
-    branches:
-      - main
-    pull_request:
-
-defaults:
-  run:
-    working-directory: /opt
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: ghcr.io/uneeq-oss/prometheus-mixin-ci:latest
-    env:
-      # Override default directory to chmod 077 /opt in container image
-      GITHUB_WORKSPACE: /opt
     steps:
-      - name: test
-        run: |
-          pwd
-          find .
       - name: Checkout repository
         uses: actions/checkout@v2
+
+      - name: Fetch jsonnet dependencies
+        uses: docker://ghcr.io/uneeq-oss/prometheus-mixin-ci:latest
         with:
-          path: .
+          entrypoint: jb
+          args: install
+
       - name: Build/Render jsonnet
-        run: |
-          jb install
-          make build
+        uses: docker://ghcr.io/uneeq-oss/prometheus-mixin-ci:latest
+        with:
+          entrypoint: make
+          args: build
+
       - name: Archive manifests for testing and publishing
         uses: actions/upload-artifact@v2
         with:
