@@ -1,0 +1,42 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - main
+    pull_request:
+      branches:
+        - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: ghcr.io/uneeq-oss/prometheus-mixin-ci:latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Build/Render jsonnet
+        run: |
+          jb install
+          make build
+      - name: Archive manifests for testing and publishing
+        uses: actions/upload-artifact@v2
+        with:
+          name: manifests
+          path: |
+            manifests
+
+  test:
+    runs-on: ubuntu-latest
+    container: prom/prometheus:latest
+    needs: [build]
+    steps:
+      - name: Download rendered manifests
+        uses: actions/download-artifact@v2
+        with:
+          name: manifests
+      - name: Prometheus lint rules
+        run: |
+          promtool check rules manifests/prometheus_rules.yaml
+          promtool check rules manifests/prometheus_alerts.yaml
+          promtool test rules tests.yaml
