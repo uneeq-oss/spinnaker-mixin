@@ -1,0 +1,61 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/uneeq-oss/prometheus-mixin-ci:latest
+      options: --user root  # HACK GHA lack of repo mounting -> perm issues
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Build/Render jsonnet
+        run: |
+          make build
+
+      - name: Archive manifests for testing and publishing
+        uses: actions/upload-artifact@v2
+        with:
+          name: manifests
+          path: |
+            manifests
+            tests.yaml
+
+  test:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - name: Download rendered manifests
+        uses: actions/download-artifact@v2
+        with:
+          name: manifests
+
+      - name: Show files
+        run: |
+          find .
+
+      - name: Prometheus check recording rules
+        uses: docker://prom/prometheus:latest
+        with:
+          entrypoint: promtool
+          args: check rules manifests/prometheus_rules.yaml
+
+      - name: Prometheus check alerts
+        uses: docker://prom/prometheus:latest
+        with:
+          entrypoint: promtool
+          args: check rules manifests/prometheus_alerts.yaml
+
+      - name: Prometheus test rules
+        uses: docker://prom/prometheus:latest
+        with:
+          entrypoint: promtool
+          args: test rules tests.yaml
