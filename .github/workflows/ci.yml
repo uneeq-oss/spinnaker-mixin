@@ -5,14 +5,16 @@ on:
     branches:
       - main
     pull_request:
-      branches:
-        - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
     container: ghcr.io/uneeq-oss/prometheus-mixin-ci:latest
     steps:
+      - name: test
+        run: |
+          pwd
+          find .
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Build/Render jsonnet
