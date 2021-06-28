@@ -52,7 +52,7 @@ build: dep ## Build dashboards and Prometheus files
 	$(JSONNET_CMD) -S lib/alerts.jsonnet > manifests/prometheus_alerts.yaml
 	$(JSONNET_CMD) -S lib/rules.jsonnet > manifests/prometheus_rules.yaml
 
-test: build ## Test generated files
+test: ## Test generated files
 	$(JSONNET_FMT_CMD) --version
 	export failed=0
 	export fs='$(shell find . -name '*.jsonnet' -o -name '*.libsonnet')'
