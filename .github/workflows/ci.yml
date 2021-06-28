@@ -38,10 +38,6 @@ jobs:
         with:
           name: manifests
 
-      - name: Show files
-        run: |
-          find .
-
       - name: Prometheus check recording rules
         uses: docker://ghcr.io/uneeq-oss/prometheus-mixin-ci:latest
         with:
