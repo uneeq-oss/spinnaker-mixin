@@ -43,19 +43,19 @@ jobs:
           find .
 
       - name: Prometheus check recording rules
-        uses: docker://prom/prometheus:latest
+        uses: docker://ghcr.io/uneeq-oss/prometheus-mixin-ci:latest
         with:
           entrypoint: promtool
           args: check rules manifests/prometheus_rules.yaml
 
       - name: Prometheus check alerts
-        uses: docker://prom/prometheus:latest
+        uses: docker://ghcr.io/uneeq-oss/prometheus-mixin-ci:latest
         with:
           entrypoint: promtool
           args: check rules manifests/prometheus_alerts.yaml
 
       - name: Prometheus test rules
-        uses: docker://prom/prometheus:latest
+        uses: docker://ghcr.io/uneeq-oss/prometheus-mixin-ci:latest
         with:
           entrypoint: promtool
           args: test rules tests.yaml
