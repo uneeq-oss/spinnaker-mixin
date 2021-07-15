@@ -5,8 +5,8 @@ The Spinnaker services can expose Prometheus metrics on
 Plugin](https://github.com/armory-plugins/armory-observability-plugin).
 
 These metrics enable operators to observe how it is performing. For example
-how many pipelines have been triggered, any errors with cloud providers or REST
-calls between services.
+how many pipelines have been triggered, any errors with cloud providers, rate of
+requests between services.
 
 These metrics can be scraped by a Prometheus server and viewed in Prometheus,
 displayed on a Grafana dashboard and/or trigger alerts to Slack/etc.
@@ -86,7 +86,7 @@ The [dashboards](./dashboards/) directory contains the jsonnet template files
 which must be rendered into json in order to be imported into Grafana.
 
 You can install and use the `jsonnet` tool to render the dashboards or download
-the latest [release](https://gitlab.com/uneeq-oss/spinnaker-mixin/-/releases)
+the latest [release](https://github.com/uneeq-oss/spinnaker-mixin/releases)
 archive which contains rendered json files ready for importing into Grafana.
 
 You may need to edit the datasource if you have configured your Prometheus
@@ -100,7 +100,7 @@ project documentation for instructions on importing mixins.
 ## Using the mixin as raw JSON and YAML files
 
 If you don't use the jsonnet based `kube-prometheus` project then you will need to
-generate the raw files or download the latest [release](https://gitlab.com/uneeq-oss/spinnaker-mixin/-/releases)
+generate the raw files or download the latest [release](https://github.com/uneeq-oss/spinnaker-mixin/releases)
 archive for inclusion in your Prometheus installation.
 
 To generate the raw files first install the `jsonnet` dependencies:
