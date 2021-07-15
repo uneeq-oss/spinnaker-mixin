@@ -171,3 +171,15 @@ for conventions we follow.
 New alerts should generally be accompanied by a relevant unit test in
 [tests.yaml](./tests.yaml). Tests help readers understand the alerts purpose and
 also catch edge cases.
+
+## Releasing
+
+```
+git clone git@github.com:uneeq-oss/spinnaker-mixin.git
+cd spinnaker-mixin
+git tag vX.Y.Z
+git push orign vX.Y.Z
+```
+
+GitHub Actions will then build, test and create a new release with an archive
+containing rendered yaml and json manifests, including Grafana dashboards.
