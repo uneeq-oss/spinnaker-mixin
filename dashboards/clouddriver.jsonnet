@@ -215,7 +215,7 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(executionCount_total{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (instance)',
+        'sum(rate(executionTime_seconds_count{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (instance)',
         legendFormat='{{instance}}',
       )
     )
