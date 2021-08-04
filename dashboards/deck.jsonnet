@@ -78,6 +78,4 @@ grafana.dashboard.new(
   )
 )
 
-.addRow(
-  kpm
-)
+.addRow(kpm)
