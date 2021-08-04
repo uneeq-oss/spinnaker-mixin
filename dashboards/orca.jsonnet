@@ -1,3 +1,4 @@
+local jvm = import './jvm-metrics.jsonnet';
 local kpm = import './kubernetes-pod-metrics.jsonnet';
 local grafana = import 'github.com/grafana/grafonnet-lib/grafonnet/grafana.libsonnet';
 
@@ -508,23 +509,7 @@ grafana.dashboard.new(
 )
 
 .addRow(
-  grafana.row.new(
-    title='Machine Metrics',
-  )
-  .addPanel(
-    grafana.graphPanel.new(
-      title='JVM Memory Usage ($spinSvc, $Instance)',
-      datasource='$datasource',
-      span=3,
-      format='decbytes',
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(jvm_memory_used_bytes{job=~"$job", instance=~"$Instance", area="heap"}) by (id)',
-        legendFormat='{{id}}',
-      )
-    )
-  )
+  jvm
 )
 
 .addRow(
