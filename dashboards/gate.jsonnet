@@ -1,3 +1,4 @@
+local hrm = import './http-request-metrics.jsonnet';
 local jvm = import './jvm-metrics.jsonnet';
 local kpm = import './kubernetes-pod-metrics.jsonnet';
 local grafana = import 'github.com/grafana/grafonnet-lib/grafonnet/grafana.libsonnet';
@@ -135,58 +136,10 @@ grafana.dashboard.new(
       )
     )
   )
-  .addPanel(
-    grafana.graphPanel.new(
-      title='5xx/429 Controller Invocations (gate, $Instance)',
-      datasource='$datasource',
-      span=3,
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(rate(controller_invocations_seconds_count{job=~"$job", instance=~"$Instance",status="5xx"}[$__rate_interval])) by (controller, method, statusCode)',
-        legendFormat='{{statusCode}}/{{controller}}/{{method}}',
-      )
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(rate(controller_invocations_seconds_count{job=~"$job", instance=~"$Instance",statusCode="429"}[$__rate_interval])) by (controller, method, statusCode)',
-        legendFormat='{{statusCode}}/{{controller}}/{{method}}',
-      )
-    )
-  )
-  .addPanel(
-    grafana.graphPanel.new(
-      title='Controller Invocations by Method (gate, $Instance)',
-      datasource='$datasource',
-      span=3,
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(rate(controller_invocations_seconds_count{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (controller, method)',
-        legendFormat='{{controller}}/{{method}}',
-      )
-    )
-  )
-  .addPanel(
-    grafana.graphPanel.new(
-      title='Controller Invocation Latency by Method (gate, $Instance)',
-      datasource='$datasource',
-      span=3,
-      format='dtdurations',
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(rate(controller_invocations_seconds_sum{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (controller, method)\n/\nsum(rate(controller_invocations_seconds_count{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (controller, method)',
-        legendFormat='{{controller}}/{{method}}',
-      )
-    )
-  )
 )
 
-.addRow(
-  jvm
-)
+.addRow(hrm)
 
-.addRow(
-  kpm
-)
+.addRow(jvm)
+
+.addRow(kpm)

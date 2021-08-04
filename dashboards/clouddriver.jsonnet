@@ -1,3 +1,4 @@
+local hrm = import './http-request-metrics.jsonnet';
 local jvm = import './jvm-metrics.jsonnet';
 local kpm = import './kubernetes-pod-metrics.jsonnet';
 local grafana = import 'github.com/grafana/grafonnet-lib/grafonnet/grafana.libsonnet';
@@ -774,10 +775,8 @@ grafana.dashboard.new(
   )
 )
 
-.addRow(
-  jvm
-)
+.addRow(hrm)
 
-.addRow(
-  kpm
-)
+.addRow(jvm)
+
+.addRow(kpm)

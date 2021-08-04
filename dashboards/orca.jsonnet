@@ -1,3 +1,4 @@
+local hrm = import './http-request-metrics.jsonnet';
 local jvm = import './jvm-metrics.jsonnet';
 local kpm = import './kubernetes-pod-metrics.jsonnet';
 local grafana = import 'github.com/grafana/grafonnet-lib/grafonnet/grafana.libsonnet';
@@ -259,87 +260,6 @@ grafana.dashboard.new(
   )
   .addPanel(
     grafana.graphPanel.new(
-      title='5xx Invocation Errors (orca, $Instance)',
-      datasource='$datasource',
-      span=3,
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(rate(controller_invocations_total{job=~"$job", instance=~"$Instance", status="5xx"}[$__rate_interval])) by (controller, method, status)',
-        legendFormat='{{statusCode}}/{{controller}}/{{method}}',
-      )
-    )
-  )
-  .addPanel(
-    grafana.graphPanel.new(
-      title='Stage Durations > 5m per Time-Bucket/Platform (orca, $Instance)',
-      datasource='$datasource',
-      span=3,
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(rate(stage_invocations_duration_total{job=~"$job", instance=~"$Instance", bucket!="lt5m"}[$__rate_interval])) by (stageType, cloudProvider, bucket)',
-        legendFormat='{{bucket}}/{{cloudProvider}}/{{stageType}}',
-      )
-    )
-  )
-  .addPanel(
-    grafana.graphPanel.new(
-      title='Ok Http Calls by Status Code (orca, $Instance)',
-      datasource='$datasource',
-      span=3,
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(rate(okhttp_requests_seconds_count{job=~"$job",instance=~"$Instance"}[$__rate_interval])) by (statusCode)',
-        legendFormat='{{statusCode}}',
-      )
-    )
-  )
-  .addPanel(
-    grafana.graphPanel.new(
-      title='Ok Http Calls Latency by Request Host (orca, $Instance)',
-      datasource='$datasource',
-      span=3,
-      format='dtdurations',
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(rate(okhttp_requests_seconds_sum{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (requestHost)\n/\nsum(rate(okhttp_requests_seconds_count{job="$job", instance=~"$Instance"}[$__rate_interval])) by (requestHost)',
-        legendFormat='{{requestHost}}',
-      )
-    )
-  )
-  .addPanel(
-    grafana.graphPanel.new(
-      title='Controller Invocations by Method (orca, $Instance)',
-      datasource='$datasource',
-      span=3,
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(rate(controller_invocations_total{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (controller, method)',
-        legendFormat='{{controller}}/{{method}}',
-      )
-    )
-  )
-
-  .addPanel(
-    grafana.graphPanel.new(
-      title='Controller Invocation Latency by Method (orca, $Instance)',
-      datasource='$datasource',
-      span=3,
-      format='dtdurations',
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(rate(controller_invocations_seconds_sum{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (controller, method)\n/\nsum(rate(controller_invocations_total{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (controller, method)',
-        legendFormat='{{controller}}/{{method}}',
-      )
-    )
-  )
-  .addPanel(
-    grafana.graphPanel.new(
       title='Active Stages per Type/Platform (orca, $Instance)',
       datasource='$datasource',
       span=3,
@@ -361,6 +281,19 @@ grafana.dashboard.new(
       grafana.prometheus.target(
         'sum(rate(stage_invocations_duration_total{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (cloudProvider, stageType)',
         legendFormat='{{stageType}}/{{cloudProvider}}',
+      )
+    )
+  )
+  .addPanel(
+    grafana.graphPanel.new(
+      title='Stage Durations > 5m per Time-Bucket/Platform (orca, $Instance)',
+      datasource='$datasource',
+      span=3,
+    )
+    .addTarget(
+      grafana.prometheus.target(
+        'sum(rate(stage_invocations_duration_total{job=~"$job", instance=~"$Instance", bucket!="lt5m"}[$__rate_interval])) by (stageType, cloudProvider, bucket)',
+        legendFormat='{{bucket}}/{{cloudProvider}}/{{stageType}}',
       )
     )
   )
@@ -508,10 +441,8 @@ grafana.dashboard.new(
   )
 )
 
-.addRow(
-  jvm
-)
+.addRow(hrm)
 
-.addRow(
-  kpm
-)
+.addRow(jvm)
+
+.addRow(kpm)

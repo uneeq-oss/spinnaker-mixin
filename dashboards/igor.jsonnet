@@ -1,3 +1,4 @@
+local hrm = import './http-request-metrics.jsonnet';
 local jvm = import './jvm-metrics.jsonnet';
 local kpm = import './kubernetes-pod-metrics.jsonnet';
 local grafana = import 'github.com/grafana/grafonnet-lib/grafonnet/grafana.libsonnet';
@@ -194,52 +195,10 @@ grafana.dashboard.new(
       )
     )
   )
-  .addPanel(
-    grafana.graphPanel.new(
-      title='5xx Controller Invocations',
-      datasource='$datasource',
-      span=3,
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum by (controller, method, statusCode) (\n  rate(controller_invocations_total{job=~"$job",status="5xx", instance=~"$Instance"}[$__interval])\n)',
-        legendFormat='{{statusCode}}/{{controller}}/{{method}}',
-      )
-    )
-  )
-  .addPanel(
-    grafana.graphPanel.new(
-      title='Controller Invocations by Method',
-      datasource='$datasource',
-      span=3,
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum by (controller, method) (\n  rate(controller_invocations_total{job=~"$job", instance=~"$Instance"}[$__rate_interval])\n)',
-        legendFormat='{{controller}}/{{method}}',
-      )
-    )
-  )
-  .addPanel(
-    grafana.graphPanel.new(
-      title='Controller Invocation Latency by Method',
-      datasource='$datasource',
-      span=3,
-      format='dtdurations',
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum by (controller, method) (rate(controller_invocations_seconds_sum{job=~"$job", instance=~"$Instance"}[$__rate_interval]))\n/\nsum by (controller, method) (rate(controller_invocations_seconds_count{job=~"$job", instance=~"$Instance"}[$__rate_interval]))',
-        legendFormat='{{controller}}/{{method}}',
-      )
-    )
-  )
 )
 
-.addRow(
-  jvm
-)
+.addRow(hrm)
 
-.addRow(
-  kpm
-)
+.addRow(jvm)
+
+.addRow(kpm)

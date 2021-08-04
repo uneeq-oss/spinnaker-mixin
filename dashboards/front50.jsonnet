@@ -1,3 +1,4 @@
+local hrm = import './http-request-metrics.jsonnet';
 local jvm = import './jvm-metrics.jsonnet';
 local kpm = import './kubernetes-pod-metrics.jsonnet';
 local grafana = import 'github.com/grafana/grafonnet-lib/grafonnet/grafana.libsonnet';
@@ -124,19 +125,6 @@ grafana.dashboard.new(
   )
   .addPanel(
     grafana.graphPanel.new(
-      title='5xx Invocation Errors by Method (front50, $Instance)',
-      datasource='$datasource',
-      span=3,
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(rate(controller_invocations_total{job=~"$job", instance=~"$Instance", status="5xx"}[$__rate_interval])) by (controller, method, statusCode)',
-        legendFormat='{{statusCode}}/{{controller}}/{{method}}',
-      )
-    )
-  )
-  .addPanel(
-    grafana.graphPanel.new(
       title='Cache Refreshes / Minute  (negative are scheduled) (front50, $Instance)',
       datasource='$datasource',
       span=3,
@@ -156,19 +144,6 @@ grafana.dashboard.new(
   )
   .addPanel(
     grafana.graphPanel.new(
-      title='Controller Invocation by Method (front50, $Instance)',
-      datasource='$datasource',
-      span=3,
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(rate(controller_invocations_total{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (controller, method)',
-        legendFormat='{{controller}}/{{method}}',
-      )
-    )
-  )
-  .addPanel(
-    grafana.graphPanel.new(
       title='Item Cache Size (front50, $Instance)',
       datasource='$datasource',
       span=3,
@@ -177,20 +152,6 @@ grafana.dashboard.new(
       grafana.prometheus.target(
         'sum(storageServiceSupport_cacheSize{instance=~"$Instance"}) by (objectType)',
         legendFormat='{{objectType}}',
-      )
-    )
-  )
-  .addPanel(
-    grafana.graphPanel.new(
-      title='Controller Invocation Latency by Method (front50, $Instance)',
-      datasource='$datasource',
-      span=3,
-      format='dtdurations',
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(rate(controller_invocations_seconds_sum{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (controller, method)\n/ \nsum(rate(controller_invocations_seconds_count{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (controller, method)',
-        legendFormat='{{controller}}/{{method}}',
       )
     )
   )
@@ -282,10 +243,8 @@ grafana.dashboard.new(
   )
 )
 
-.addRow(
-  jvm
-)
+.addRow(hrm)
 
-.addRow(
-  kpm
-)
+.addRow(jvm)
+
+.addRow(kpm)
