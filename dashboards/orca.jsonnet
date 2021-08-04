@@ -109,6 +109,7 @@ grafana.dashboard.new(
     .addTarget(
       grafana.prometheus.target(
         'sum by (controller, status) (\n  rate(controller_invocations_seconds_sum{container="orca"}[$__rate_interval])\n) \n/\nsum by (controller, status) (\n  rate(controller_invocations_seconds_count{container="orca"}[$__rate_interval])\n)\n',
+        legendFormat='{{ controller }} :: {{ status }}',
       )
     )
   )
@@ -122,7 +123,8 @@ grafana.dashboard.new(
     .addTarget(
       grafana.prometheus.target(
         'sum by (executionType) (\n  rate(task_invocations_duration_seconds_count{container="orca"}[$__rate_interval])\n)',
-      )
+        legendFormat='{{ executionType }}',
+      ),
     )
   )
   .addPanel(
@@ -136,7 +138,7 @@ grafana.dashboard.new(
       grafana.prometheus.target(
         'sum by (application, executionType) (\n  rate(\n    task_invocations_duration_seconds_count{container="orca", status="RUNNING"}[$__rate_interval])\n) ',
         legendFormat='{{ application }} - {{ executionType }}',
-      )
+      ),
     )
   )
   .addPanel(
@@ -194,40 +196,46 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(\n  queue_depth{container="orca"}\n)',
+        'max(\n  queue_depth{job=~"$job", instance=~"$Instance"}\n)',
         legendFormat='queued',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(\n  queue_ready_depth{container="orca"}\n)',
+        'max(\n  queue_ready_depth{job=~"$job", instance=~"$Instance"}\n)',
         legendFormat='ready',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(\nqueue_unacked_depth{container="orca"}\n)',
+        'max(\nqueue_unacked_depth{job=~"$job", instance=~"$Instance"}\n)',
         legendFormat='unacked',
       )
     )
   )
   .addPanel(
     grafana.graphPanel.new(
-      title='Queue Errors',
-      datasource='$datasource',
+      title='Queue Errors (orca, $Instance)',
       description='Retried is a normal error condition by itself. \n\nDead-lettered occurs when a message has been retried a bunch of times and has never been successfully delivered.\n\nOrphaned messages are bad. \n\nThey’re messages whose message contents are in the queue, but do not have a pointer in either the queue set or unacked set. \n\nThis is a sign of an internal error, likely a troubling issue with Redis. \n\nIt “should never happen” if your system is healthy, and likewise “should never happen” even if your system is really, really overloaded. It’s worth a bug report.',
+      datasource='$datasource',
       span=3,
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(\n  queue_retried_messages_total{container="orca"}\n)',
-        legendFormat='retried',
+        'sum(rate(queue_retried_messages_total{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (job)',
+        legendFormat='Retried',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(\n  rate(queue_orphaned_messages{container="orca"}[$__rate_interval])\n)',
-        legendFormat='orphaned',
+        'sum(rate(queue_dead_messages_total{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (job)',
+        legendFormat='Dead',
+      )
+    )
+    .addTarget(
+      grafana.prometheus.target(
+        'sum(rate(queue_orphaned_messages{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (job)',
+        legendFormat='Orphaned',
       )
     )
   )
@@ -241,13 +249,13 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(\n  queue_message_lag_seconds_sum\n)\n/\nsum(\n  queue_message_lag_seconds_count\n)',
+        'sum(\n  queue_message_lag_seconds_sum{job=~"$job", instance=~"$Instance"}\n)\n/\nsum(\n  queue_message_lag_seconds_count{job=~"$job", instance=~"$Instance"}\n)',
         legendFormat='mean',
       )
     )
     .addTarget(
       grafana.prometheus.target(
-        'max(queue_message_lag_seconds_max)',
+        'max(queue_message_lag_seconds_max{job=~"$job", instance=~"$Instance"})',
         legendFormat='max',
       )
     )
@@ -323,6 +331,7 @@ grafana.dashboard.new(
       )
     )
   )
+
   .addPanel(
     grafana.graphPanel.new(
       title='Active Threads (orca, $Instance)',
@@ -346,96 +355,6 @@ grafana.dashboard.new(
       grafana.prometheus.target(
         'sum(threadpool_poolSize{job=~"$job", instance=~"$Instance"}) by (id)',
         legendFormat='{{id}}',
-      )
-    )
-  )
-  .addPanel(
-    grafana.graphPanel.new(
-      title='Queue Depth (orca, $Instance)',
-      datasource='$datasource',
-      span=3,
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(queue_depth{job=~"$job", instance=~"$Instance"}) by (instance)',
-        legendFormat='Queued',
-      )
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(queue_ready_depth{job=~"$job", instance=~"$Instance"}) by (instance)',
-        legendFormat='Ready',
-      )
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(queue_unacked_depth{job=~"$job", instance=~"$Instance"}) by (instance)',
-        legendFormat='In-Process',
-      )
-    )
-  )
-  .addPanel(
-    grafana.graphPanel.new(
-      title='Queue Errors (orca, $Instance)',
-      datasource='$datasource',
-      span=3,
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(rate(queue_retried_messages_total{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (job)',
-        legendFormat='Retried',
-      )
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(rate(queue_dead_messages_total{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (job)',
-        legendFormat='Dead',
-      )
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(rate(queue_orphaned_messages{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (job)',
-        legendFormat='Orphaned',
-      )
-    )
-  )
-  .addPanel(
-    grafana.graphPanel.new(
-      title='Message Lag Time (orca, $Instance)',
-      datasource='$datasource',
-      span=3,
-      format='dtdurations',
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'rate(queue_message_lag_seconds_count{job=~"$job", instance=~"$Instance"}[$__rate_interval])',
-        legendFormat='messages {{ instance }}',
-      )
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'rate(queue_message_lag_seconds_sum{job=~"$job", instance=~"$Instance"}[$__rate_interval])\n/\nrate(queue_message_lag_seconds_count{job=~"$job", instance=~"$Instance"}[$__rate_interval])',
-        legendFormat='lag time {{ instance }}',
-      )
-    )
-  )
-
-  .addPanel(
-    grafana.graphPanel.new(
-      title='Pushed Message Summary (orca, $Instance)',
-      datasource='$datasource',
-      span=3,
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(rate(queue_pushed_messages_total{job=~"$job", instance=~"$Instance"}[$__rate_interval])) by (instance)',
-        legendFormat='Pushed/{{ instance }}',
-      )
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(rate(queue_acknowledged_messages_total{instance=~"$Instance"}[$__rate_interval])) by (instance)',
-        legendFormat='Acknowledged/{{ instance }}',
       )
     )
   )
