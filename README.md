@@ -36,6 +36,7 @@ $ kubectl port-forward orca-6786f98464-ckml8 8083 &
 ```
 
 Then query the metrics endpoint:
+
 ```
 $ curl localhost:7002/metrics
 
@@ -68,6 +69,7 @@ included `PodMonitor` as a base and duplicate per application, modifying the
 the selectors pod labels and target port number each time.
 
 Submit the `PodMonitor` CustomResourceDefinition to Kubernetes API:
+
 ```
 kubectl apply -f podmonitor.yaml
 ```
@@ -104,13 +106,16 @@ generate the raw files or download the latest [release](https://github.com/uneeq
 archive for inclusion in your Prometheus installation.
 
 To generate the raw files first install the `jsonnet` dependencies:
+
 ```
-go get github.com/google/go-jsonnet/cmd/jsonnet
-go get github.com/google/go-jsonnet/cmd/jsonnetfmt
+go install github.com/google/go-jsonnet/cmd/jsonnet@latest
+go install github.com/google/go-jsonnet/cmd/jsonnetfmt@latest
+go install github.com/jsonnet-bundler/jsonnet-bundler/cmd/jb@latest
 jb install
 ```
 
 Generate with:
+
 ```
 make
 ```
@@ -134,28 +139,34 @@ support we can have it watch for dashboard changes in
 `manifests/` and reload them.
 
 Start Grafana listening on `127.0.0.1:3000`:
+
 ```
 make grafana
 ```
 
 Expose your Prometheus on `0.0.0.0:9090` or via Kubernetes:
+
 ```
 kubectl port-forward -n prometheus svc/prometheus-k8s --address 0.0.0.0 9090 &
 ```
 
 Edit dashboards:
+
 ```
 vim dashboards/clouddriver.jsonnet
 ```
 
 Install the `jsonnet` dependencies:
+
 ```
-go get github.com/google/go-jsonnet/cmd/jsonnet
-go get github.com/google/go-jsonnet/cmd/jsonnetfmt
+go install github.com/google/go-jsonnet/cmd/jsonnet@latest
+go install github.com/google/go-jsonnet/cmd/jsonnetfmt@latest
+go install github.com/jsonnet-bundler/jsonnet-bundler/cmd/jb@latest
 jb install
 ```
 
 Render jsonnet to json:
+
 ```
 make build
 ```
