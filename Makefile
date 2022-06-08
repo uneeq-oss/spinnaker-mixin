@@ -14,6 +14,7 @@ SHELL := bash
 
 JSONNET_CMD := jsonnet
 JSONNET_FMT_CMD := jsonnetfmt
+JB_CMD := jb
 
 ifneq ($(SKIP_DOCKER),true)
 	PROMETHEUS_DOCKER_IMAGE := prom/prometheus:latest
@@ -40,7 +41,7 @@ fmt: ## Format Jsonnet
 
 dep: ## Install dependencies
 	if [[ ! -d vendor/ ]]; then
-		jb install
+		$(JB_CMD) install
 	fi
 
 build: dep ## Build dashboards and Prometheus files
