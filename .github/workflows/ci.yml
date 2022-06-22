@@ -23,7 +23,7 @@ jobs:
         run: make build
 
       - name: Archive manifests for testing and publishing
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: manifests
           path: manifests/
