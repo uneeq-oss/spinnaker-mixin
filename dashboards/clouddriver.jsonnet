@@ -95,7 +95,7 @@ grafana.dashboard.new(
   .addPanel(
     grafana.text.new(
       title='Service Description',
-      content='This srvice is the main integration point for Spinnaker cloud providers like AWS, Azure, CloudFoundry, GCP, Kubernetes, etc.',
+      content='This service is the main integration point for Spinnaker cloud providers like AWS, Azure, CloudFoundry, GCP, Kubernetes, etc.',
       span=3,
     )
   )
@@ -158,8 +158,8 @@ grafana.dashboard.new(
     )
     .addTarget(
       grafana.prometheus.target(
-        'sum(rate(controller_invocations_total{job=~"$job", instance=~"$Instance",account=~"$Account"}[$__rate_interval])) by (controller, method)',
-        legendFormat='{{controller}}/{{method}}',
+        'sum(rate(operations_seconds_sum{success!="true"}[$__rate_interval])) by (OperationType)\n/\nsum(rate(operations_seconds_count[$__rate_interval])) by (OperationType)',
+        legendFormat='{{OperationType}}',
       )
     )
   )
@@ -169,12 +169,6 @@ grafana.dashboard.new(
       datasource='$datasource',
       span=3,
       format='dtdurations',
-    )
-    .addTarget(
-      grafana.prometheus.target(
-        'sum(rate(operations_seconds_sum{success!="true"}[$__rate_interval])) by (OperationType)\n/\nsum(rate(operations_seconds_count[$__rate_interval])) by (OperationType)',
-        legendFormat='{{OperationType}}',
-      )
     )
     .addTarget(
       grafana.prometheus.target(
