@@ -36,7 +36,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download rendered manifests
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: manifests
           path: manifests/
@@ -64,7 +64,7 @@ jobs:
         run: echo ::set-output name=REPO::${GITHUB_REPOSITORY##*/}
 
       - name: Download rendered manifests
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: manifests
           path: manifests/
